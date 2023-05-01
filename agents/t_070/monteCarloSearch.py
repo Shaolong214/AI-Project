@@ -14,7 +14,11 @@ from Azul.azul_model import AzulGameRule as GameRule
 from copy import deepcopy
 from collections import deque
 
+# New
 from costRule import costH
+from Azul.azul_model import AgentState
+from collections import defaultdict
+# from template import GameRule as GameRule2
 
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
@@ -32,11 +36,36 @@ NUM_PLAYERS = 2
 # 3) Simulation
 # 4) Backpropagation
 
+class nodes():
+
+    # Note: So far the code below is the same as the code in Week 9 Monte-Carlo Tree Search Notebook
+    # begin-----------------------------------------------------------------------------------------
+    visitTimes = defaultdict (lambda: 0) # initially, visit each node 0 times 
+
+    def __init__(self, _id, mdp, parent, state:AgentState(), qfunction, bandit, reward = 0.0, action = None):
+        self.id = _id 
+        self.mdp = mdp
+        self.parent = parent
+        self.state = state
+        self.qfunction = qfunction
+        self.game_rule = GameRule(NUM_PLAYERS) 
+        self.bandit = bandit
+        self.reward = reward
+        self.action = action 
+
+    def get_visits(self):
+        return myAgent.visitTimes[self.state]
+    # end--------------------------------------------------------------------------------------------
+
+
 class myAgent():
 
-    def __init__(self, _id, mdp, qfunction, bandit):
+    #visitTimes = defaultdict (lambda: 0) # initially, visit each node 0 times 
+
+    def __init__(self, _id, mdp, qfunction, bandit,agentState):
         self.id = _id 
         self.game_rule = GameRule(NUM_PLAYERS) 
+        self.agentState = AgentState()
         self.mdp = mdp
         self.qfunction = qfunction
         self.bandit = bandit
@@ -49,11 +78,11 @@ class myAgent():
     def DoAction(self, state, action):
         score = state.agents[self.id].score
         state = self.game_rule.generateSuccessor(state, action, self.id)
-        
         goal_reached = False #TODO: 
-        
         return goal_reached
     # end---------------------------------------------------------------------------
+    
+
 
     def doSearch(self, actions, rootstate):
         
@@ -66,8 +95,14 @@ class myAgent():
             pass
 
 
-    def selection():
-        pass
+    def selection(self, rootstate):
+        
+        # Only do selection if there is still tiles remaining
+        if self.agentState.TilesRemaining() == True:
+            
+            # Check if a node has expanded fully
+            if  self.visitTimes:
+                pass
 
     def expandsion():
         pass
