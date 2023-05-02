@@ -13,10 +13,8 @@ import time, random
 from Azul.azul_model import AzulGameRule as GameRule
 from copy import deepcopy
 from collections import deque
-
-import Azul.azul_model
 import Azul.azul_utils as utils
-from   template     import GameState
+    
 
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
@@ -42,15 +40,15 @@ class myAgent():
         score = state.agents[self.id].score
         state = self.game_rule.generateSuccessor(state, action, self.id)
 
-        # Add a condition that "There should be colored tile in factories" before we are able to pick tile
-        # start with the simplest version: pick 1 tile then meet goal
-        for fd in state.factories:
-            for tile in utils.Tile:
-                num_avail = fd.tiles[tile]
-                if num_avail != 0:
-                    number_of_tiles = action[2].number
-                    goal_reached = number_of_tiles == 1
-                    return goal_reached
+        if action[0] == utils.Action.TAKE_FROM_CENTRE or action[0] == utils.Action.TAKE_FROM_FACTORY:
+            # Extract the tile_grab object from the action,so we can use pattern
+            tile_grab = action[2]
+            number_of_tiles = tile_grab.number
+
+            # Check if the number of tiles taken matches the pattern line 
+            goal_reached = number_of_tiles == tile_grab.pattern_line_dest + 1
+            return goal_reached
+
 
     # Take a list of actions and an initial state, and perform breadth-first search within a time limit.
     # Return the first action that leads to goal, if any was found.
@@ -68,7 +66,7 @@ class myAgent():
                 next_path  = path + [a]                   # Add this action to the path.
                 goal     = self.DoAction(next_state, a) # Carry out this action on the state, and check for goal
                 if goal:
-                    print('path found:', next_path)
+                    print("path found:",next_path[0])
                     return next_path[0] # If the current action reached the goal, return the initial action that led there.
                 else:
                     queue.append((next_state, next_path)) # Else, simply add this state and its path to the queue.
