@@ -37,9 +37,9 @@ class myAgent():
     def DoAction(self, state, action):
         score = state.agents[self.id].score
         state = self.game_rule.generateSuccessor(state, action, self.id)
-        
-        goal_reached = False #TODO: Students, how should agent check whether it reached goal or not
-        
+            
+        number_of_tiles = action[2].number
+        goal_reached = number_of_tiles == 1
         return goal_reached
 
     # Take a list of actions and an initial state, and perform breadth-first search within a time limit.
@@ -58,7 +58,7 @@ class myAgent():
                 next_path  = path + [a]                   # Add this action to the path.
                 goal     = self.DoAction(next_state, a) # Carry out this action on the state, and check for goal
                 if goal:
-                    print(f'Move {self.turn_count}, path found:', next_path)
+                    print('path found:', next_path)
                     return next_path[0] # If the current action reached the goal, return the initial action that led there.
                 else:
                     queue.append((next_state, next_path)) # Else, simply add this state and its path to the queue.
