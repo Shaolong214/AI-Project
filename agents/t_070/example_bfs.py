@@ -42,6 +42,8 @@ class myAgent():
         score = state.agents[self.id].score
         state = self.game_rule.generateSuccessor(state, action, self.id)
 
+        # Add a condition that "There should be colored tile in factories" before we are able to pick tile
+        # start with the simplest version: pick 1 tile then meet goal
         for fd in state.factories:
             for tile in utils.Tile:
                 num_avail = fd.tiles[tile]
