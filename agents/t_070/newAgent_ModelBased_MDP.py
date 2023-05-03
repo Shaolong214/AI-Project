@@ -37,7 +37,13 @@ class MDPAgent():
         pass
 
     def is_terminal(self, state):
-        pass
+
+        if state.TilesRemaining() == True:  # End of round: if run out of tiles
+            return True
+        elif self.game_rule.gameEnds() == True: # End of game: if one row is filled with tiles
+            return True
+        else:
+            return False
 
     def get_discount_factor(self):
         pass
@@ -46,6 +52,6 @@ class MDPAgent():
         pass
 
     def get_goal_states(self, action):
-        pass        
-    
+        pass       
+
 # END FILE -----------------------------------------------------------------------------------------------------------#
