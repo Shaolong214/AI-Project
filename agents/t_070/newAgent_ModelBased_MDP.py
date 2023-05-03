@@ -7,6 +7,7 @@ from copy import deepcopy
 from collections import deque
 import Azul.azul_utils as utils
 from Azul.azul_model import TilesRemaining
+from Azul.azul_model import AgentState
     
 
 THINKTIME   = 0.9
@@ -23,6 +24,7 @@ class MDPAgent():
     def __init__(self, _id):
         self.id = _id 
         self.game_rule = GameRule(NUM_PLAYERS) 
+        self.agentState = AgentState.ScoreRound
 
     def get_states(self, state, action):
         state = self.game_rule.generateSuccessor(state, action, self.id)
@@ -36,9 +38,16 @@ class MDPAgent():
         transitions = []
 
         
+    def valid_add(self, state, newState, prob):
+        new_actions = self.get_actions(state)
+
 
     def get_reward(self, state, action, next_state):
-        pass
+        #reward = self.agentState
+        reward = 0
+        if self.get_goal_states(self, action):
+            reward += 10
+        return reward
 
     def is_terminal(self, state):
         if state.TilesRemaining() == True:  # End of round: if run out of tiles
