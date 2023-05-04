@@ -40,8 +40,11 @@ class MDPAgent():
         transitions = []
 
         
-    def valid_add(self, state, newState, prob):
-        new_actions = self.get_actions(state)
+    def valid_add(self, state, newState, newAction, prob = 1.0):
+        if newAction in self.get_actions(state):
+            return True
+        else:
+            return False
 
     # I feel the reward should consider all the situations
     # 1) complete a row/column/set 2) get closed tiles 3) deletion mark etc
@@ -51,9 +54,10 @@ class MDPAgent():
     def get_reward(self, state, action, next_state):
         #reward = self.agentState
         reward = 0
-        if self.get_goal_states(self) == True:
+        if self.get_goal_states() == True:
             reward += 10
-
+        else:
+            reward = 0
         #reward = self.agentState.ScoreRound()
         return reward
 
@@ -80,5 +84,9 @@ class MDPAgent():
             return True
         else:
             False
+
+
+class valueIter(MDPAgent):
+    pass
 
 # END FILE -----------------------------------------------------------------------------------------------------------#
