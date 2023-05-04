@@ -58,7 +58,8 @@ class MDPAgent():
             return False
 
     def get_discount_factor(self):
-        pass
+        discount = 1
+        return discount
 
     def get_initial_state(self):
         initialState = self.game_rule.initialGameState()
