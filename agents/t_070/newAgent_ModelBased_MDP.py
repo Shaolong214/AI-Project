@@ -104,9 +104,24 @@ class valueIter():
         self.mdp = MDPAgent()
         self.values = values
     
-    def bellmanEqu():
-        pass
+    def bellmanEqu(self, state, action, new_state):
+        prob = 1.0
+        reward = self.mdp.get_reward(state, action, new_state)
+        discount = self.mdp.get_discount_factor()
+        new_value += prob * (reward + discount * self.values.get_value(new_state)) 
     
-    
+    def value_iteration(self, max_iterations = 100, theta = 0.001):
+        for i in range(max_iterations):
+            delta = 0.0
+            new_values = 0
+
+            for state in self.mdp.get_states():
+                qtable = None
+                for action in self.mdp.get_actions():
+                    new_value = 0.0
+                    for new_state in self.mdp.get_transitions(state, action):
+                        new_value += self.bellmanEqu(self, state, action, new_state)
+                         
+
 
 # END FILE -----------------------------------------------------------------------------------------------------------#
