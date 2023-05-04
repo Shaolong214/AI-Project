@@ -8,7 +8,6 @@ from collections import deque
 import Azul.azul_utils as utils
 from Azul.azul_model import TilesRemaining
 from Azul.azul_model import AgentState
-    
 
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
@@ -17,8 +16,7 @@ NUM_PLAYERS = 2
 # FUNCTIONS ----------------------------------------------------------------------------------------------------------#
 
 # Reference: 
-# 1. Week 7 lecture notebook (https://gibberblot.github.io/rl-notes/single-agent/MDPs.html)
-
+# Week 7 lecture notebook (https://gibberblot.github.io/rl-notes/single-agent/MDPs.html)
 class MDPAgent():
 
     def __init__(self, _id):
@@ -38,10 +36,22 @@ class MDPAgent():
     # 
     def get_transitions(self, state, action):
         transitions = []
+        action = self.get_actions(state)
 
-        
-    def valid_add(self, state, newState, newAction, prob = 1.0):
-        if newAction in self.get_actions(state):
+        if action == "ENDROUND":
+            pass
+        elif action == "STARTROUND":
+            pass 
+        elif action[0] == utils.Action.TAKE_FROM_FACTORY:
+            transitions += self.valid_add(state, action, prob= 1.0)
+
+        elif action[0] == utils.Action.TAKE_FROM_CENTRE:
+            transitions += self.valid_add(state, action, prob= 1.0)
+    
+    # So far prob for each state = 1
+    def valid_add(self, state, action, prob = 1.0):
+        newState = self.get_states(state, action)
+        if action in self.get_actions(state):
             return True
         else:
             return False
@@ -86,7 +96,17 @@ class MDPAgent():
             False
 
 
-class valueIter(MDPAgent):
-    pass
+# Reference: 
+# Week 7 lecture notebook (https://gibberblot.github.io/rl-notes/single-agent/value-iteration.html)
+class valueIter():
+
+    def __init__(self, _id, values):
+        self.mdp = MDPAgent()
+        self.values = values
+    
+    def bellmanEqu():
+        pass
+    
+    
 
 # END FILE -----------------------------------------------------------------------------------------------------------#
