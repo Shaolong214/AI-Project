@@ -24,7 +24,7 @@ class MDPAgent():
     def __init__(self, _id):
         self.id = _id 
         self.game_rule = GameRule(NUM_PLAYERS) 
-        self.agentState = AgentState.ScoreRound
+        self.agentState = AgentState()
 
     def get_states(self, state, action):
         state = self.game_rule.generateSuccessor(state, action, self.id)
@@ -33,7 +33,9 @@ class MDPAgent():
     def get_actions(self,state):
         action = self.game_rule.getLegalActions(state, self.id)
         return action
-
+    
+    # I feel the transitions is mainly about 2 actions (pick from factory or center)
+    # 
     def get_transitions(self, state, action):
         transitions = []
 
@@ -41,12 +43,18 @@ class MDPAgent():
     def valid_add(self, state, newState, prob):
         new_actions = self.get_actions(state)
 
-
+    # I feel the reward should consider all the situations
+    # 1) complete a row/column/set 2) get closed tiles 3) deletion mark etc
+    # The reward is calculated at the round end
+    # However, I decide to start with a simple version
+    # The reward will given once reach the goal
     def get_reward(self, state, action, next_state):
         #reward = self.agentState
         reward = 0
-        if self.get_goal_states(self, action):
+        if self.get_goal_states(self) == True:
             reward += 10
+
+        #reward = self.agentState.ScoreRound()
         return reward
 
     def is_terminal(self, state):
@@ -65,7 +73,12 @@ class MDPAgent():
         initialState = self.game_rule.initialGameState()
         return initialState
     
-    def get_goal_states(self, action):
-        pass       
+    # Start with a simple reasonable goal (might change afterwards)
+    # My goal is if any column or row or set is full filled with tiles
+    def get_goal_states(self):
+        if self.agentState.GetCompletedRows() or  self.agentState.GetCompletedColumns() or self.agentState.GetCompletedSets():
+            return True
+        else:
+            False
 
 # END FILE -----------------------------------------------------------------------------------------------------------#
