@@ -33,9 +33,10 @@ class MDPAgent():
         return action
     
     # I feel the transitions is mainly about 2 actions (pick from factory or center)
-    # 
     def get_transitions(self, state, action):
         transitions = []
+
+        # I feel that I have checked my actions are legal action, thus, it would also be "valid_add" 
         action = self.get_actions(state)
 
         if action == "ENDROUND":
@@ -43,18 +44,31 @@ class MDPAgent():
         elif action == "STARTROUND":
             pass 
         elif action[0] == utils.Action.TAKE_FROM_FACTORY:
-            transitions += self.valid_add(state, action, prob= 1.0)
+            # after take action: pick tiles from factory
+            # it need to get all x number of y colored tile from factory z & put on ith line or floor or bag
+            # E.g., "Agent 1 takes 1 yellow(Y) tiles from factory1 1Y placed in pattern line 1"
+            tile_grab = action[2]
+            number_of_tiles = tile_grab.number
+            color_of_tiles = tile_grab.tile_type
+            transitions += self.valid_add(state)
 
         elif action[0] == utils.Action.TAKE_FROM_CENTRE:
-            transitions += self.valid_add(state, action, prob= 1.0)
+            transitions += self.valid_add(state)
+        
+        return transitions
     
     # So far prob for each state = 1
-    def valid_add(self, state, action, prob = 1.0):
-        newState = self.get_states(state, action)
-        if action in self.get_actions(state):
-            return True
-        else:
-            return False
+    #def valid_add(self, state):
+        #newAction = self.get_actions(state)
+        #newState = self.get_states(state, newAction)
+        #tile_grab = newAction[2]
+        #number_of_tiles = tile_grab.number
+        #color_of_tiles = tile_grab.tile_type
+        #if action in self.get_actions(state):
+        #    pass
+
+        
+        return state
 
     # I feel the reward should consider all the situations
     # 1) complete a row/column/set 2) get closed tiles 3) deletion mark etc
