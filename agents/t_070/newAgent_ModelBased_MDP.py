@@ -40,9 +40,13 @@ class MDPAgent():
         action = self.get_actions(state)
 
         if action == "ENDROUND":
-            pass
+            state = self.game_rule.generateSuccessor(state, action, self.id)
+            transitions += state
+            
         elif action == "STARTROUND":
-            pass 
+            state = self.game_rule.generateSuccessor(state, action, self.id)
+            transitions += state
+
         elif action[0] == utils.Action.TAKE_FROM_FACTORY:
             # after take action: pick tiles from factory
             # it need to get all x number of y colored tile from factory z & put on ith line or floor or bag
@@ -70,9 +74,7 @@ class MDPAgent():
         #color_of_tiles = tile_grab.tile_type
         #if action in self.get_actions(state):
         #    pass
-
-        
-        return state
+        #return state
 
     # I feel the reward should consider all the situations
     # 1) complete a row/column/set 2) get closed tiles 3) deletion mark etc
