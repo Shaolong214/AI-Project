@@ -47,14 +47,18 @@ class MDPAgent():
             # after take action: pick tiles from factory
             # it need to get all x number of y colored tile from factory z & put on ith line or floor or bag
             # E.g., "Agent 1 takes 1 yellow(Y) tiles from factory1 1Y placed in pattern line 1"
-            tile_grab = action[2]
-            number_of_tiles = tile_grab.number
-            color_of_tiles = tile_grab.tile_type
-            transitions += self.valid_add(state)
+            # E.f., "Agent 1 takes 3 white(w) tiles from centre 2W placed in pattern line 3 1W placed in floor line"
+            # E.g., "Agent 1 takes 4 yellow(Y) tiles from centre 4Y placed in floor line"
+            # tile_grab = action[2]
+            # number_of_tiles = tile_grab.number
+            # color_of_tiles = tile_grab.tile_type
+            state = self.game_rule.generateSuccessor(state, action, self.id)
+            transitions += state
 
         elif action[0] == utils.Action.TAKE_FROM_CENTRE:
-            transitions += self.valid_add(state)
-        
+            state = self.game_rule.generateSuccessor(state, action, self.id)
+            transitions += state
+
         return transitions
     
     # So far prob for each state = 1
