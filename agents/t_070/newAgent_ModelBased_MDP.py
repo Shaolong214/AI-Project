@@ -40,11 +40,11 @@ class MDPAgent():
         action = self.get_actions(state)
 
         if action == "ENDROUND":
-            state = self.game_rule.generateSuccessor(state, action, self.id)
+            state = self.get_states(state, action)
             transitions += state
-            
+
         elif action == "STARTROUND":
-            state = self.game_rule.generateSuccessor(state, action, self.id)
+            state = self.get_states(state, action)
             transitions += state
 
         elif action[0] == utils.Action.TAKE_FROM_FACTORY:
@@ -56,11 +56,11 @@ class MDPAgent():
             # tile_grab = action[2]
             # number_of_tiles = tile_grab.number
             # color_of_tiles = tile_grab.tile_type
-            state = self.game_rule.generateSuccessor(state, action, self.id)
+            state = self.get_states(state, action)
             transitions += state
 
         elif action[0] == utils.Action.TAKE_FROM_CENTRE:
-            state = self.game_rule.generateSuccessor(state, action, self.id)
+            state = self.get_states(state, action)
             transitions += state
 
         return transitions
