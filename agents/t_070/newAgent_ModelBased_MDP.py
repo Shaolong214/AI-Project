@@ -850,7 +850,7 @@ class MDPAgent():
     # The reward is calculated at the round end
     # However, I decide to start with a simple version
     # The reward will given once reach the goal
-    def get_reward(self, state, action, next_state):
+    def get_reward(self):
         #reward = self.agentState
         reward = 0
         if self.get_goal_states() == True:
@@ -878,8 +878,18 @@ class MDPAgent():
     
     # Start with a simple reasonable goal (might change afterwards)
     # My goal is if any column or row or set is full filled with tiles
-    def get_goal_states(self):
-        if self.agentState.GetCompletedRows() or  self.agentState.GetCompletedColumns() or self.agentState.GetCompletedSets():
+    # My goal is pick the number of tiles exact the same as the pattern line index
+    def get_goal_states(self, state):
+        #if self.agentState.GetCompletedRows() or  self.agentState.GetCompletedColumns() or self.agentState.GetCompletedSets():
+        #    return True
+        plr_state = state.agents[self.id]
+        if plr_state == (1, 1 , utils.Tile.RED) or (1, 1 , utils.Tile.BLUE) or (1, 1 , utils.Tile.WHITE) or  (1, 1 , utils.Tile.BLACK) or (1, 1 , utils.Tile.YELLOW):
+            return True 
+        elif (2, 2 , utils.Tile.BLUE) or (2, 2 , utils.Tile.BLUE) or (2, 2 , utils.Tile.WHITE) or  (2, 2 , utils.Tile.BLACK) or (2, 2 , utils.Tile.YELLOW):
+            return True
+        elif (3, 3 , utils.Tile.BLUE) or (3, 3 , utils.Tile.BLUE) or (3, 3 , utils.Tile.WHITE) or  (3, 3 , utils.Tile.BLACK) or (3, 3 , utils.Tile.YELLOW):
+            return True
+        elif (4, 4 , utils.Tile.BLUE) or (4, 4 , utils.Tile.BLUE) or (4, 4 , utils.Tile.WHITE) or  (4, 4 , utils.Tile.BLACK) or (4, 4 , utils.Tile.YELLOW):
             return True
         else:
             False
@@ -892,7 +902,7 @@ class valueIter():
     def __init__(self, _id):
         self.id = _id 
         self.mdp = MDPAgent()
- 
+
 
     #def bellmanEqu(self, state, action, new_state):
     #    prob = 1.0
