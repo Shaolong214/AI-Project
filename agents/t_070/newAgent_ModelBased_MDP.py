@@ -26,8 +26,8 @@ class MDPAgent():
 
     def get_states(self, state, action):
         state = self.game_rule.generateSuccessor(state, action, self.id)
-        plr_state = state.agents[self.id]
-        return plr_state
+        #plr_state = state.agents[self.id]
+        return state
 
     def get_actions(self,state):
         action = self.game_rule.getLegalActions(state, self.id)
@@ -41,8 +41,8 @@ class MDPAgent():
 
         # I feel that I have checked my actions are legal action, thus, it would also be "valid_add" 
         #action = self.get_actions(state)
-        plr_state = state.agents[self.id]
-        plr_state.agent_trace.actions[-1].append(action)
+        #plr_state = state.agents[self.id]
+        #plr_state.agent_trace.actions[-1].append(action)
 
         tile_grab = action[2]
         number_of_tiles = tile_grab.number
@@ -69,768 +69,357 @@ class MDPAgent():
             # E.g., "Agent 1 takes 1 yellow(Y) tiles from factory1 1Y placed in pattern line 1"
             # E.f., "Agent 1 takes 3 white(w) tiles from centre 2W placed in pattern line 3 1W placed in floor line"
             # E.g., "Agent 1 takes 4 yellow(Y) tiles from centre 4Y placed in floor line"
-            for factory_index in range(1,6):
+            for factory_index in range(1,6): # For factory indexed 1,2,3,4,5
+                
                 if color_of_tiles == utils.Tile.RED:
+                
                     if number_of_tiles == 1:
+                
                         if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         
                     elif number_of_tiles == 2:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'R', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
             
                     elif number_of_tiles == 3:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED, utils.Tile.RED )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'R', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+            
 
                     elif number_of_tiles == 4:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED, utils.Tile.RED, utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED,utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'R', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.RED)
-                            transitions += plr_state
+                            each_element = [factory_index,'R', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
 
                 elif color_of_tiles == utils.Tile.BLUE:
                     if number_of_tiles == 1:
                         if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         
                     elif number_of_tiles == 2:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'B', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
             
                     elif number_of_tiles == 3:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE, utils.Tile.BLUE )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'B', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
 
                     elif number_of_tiles == 4:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE, utils.Tile.BLUE, utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE,utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'B', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.BLUE)
-                            transitions += plr_state
+                            each_element = [factory_index,'B', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
 
                 elif color_of_tiles == utils.Tile.WHITE:
                     if number_of_tiles == 1:
                         if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         
                     elif number_of_tiles == 2:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'W', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
             
-                    elif number_of_tiles == 3:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE, utils.Tile.WHITE )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'W', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
 
                     elif number_of_tiles == 4:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE, utils.Tile.WHITE, utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE,utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'W', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.WHITE)
-                            transitions += plr_state
+                            each_element = [factory_index,'W', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
 
                 elif color_of_tiles == utils.Tile.BLACK:
                     if number_of_tiles == 1:
                         if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         
                     elif number_of_tiles == 2:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'K', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
             
                     elif number_of_tiles == 3:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK, utils.Tile.BLACK )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'K', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
 
                     elif number_of_tiles == 4:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK, utils.Tile.BLACK, utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK,utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'K', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.BLACK)
-                            transitions += plr_state
+                            each_element = [factory_index,'K', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
 
                 elif color_of_tiles == utils.Tile.YELLOW:
                     if number_of_tiles == 1:
                         if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         
                     elif number_of_tiles == 2:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'Y', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
             
                     elif number_of_tiles == 3:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW, utils.Tile.YELLOW )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'Y', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
 
                     elif number_of_tiles == 4:
                         if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW, utils.Tile.YELLOW, utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW,utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
+                        elif patternLine_index == 2:
+                            each_element = [factory_index,'Y', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
                         elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.YELLOW)
-                            transitions += plr_state
+                            each_element = [factory_index,'Y', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
+                            transitions.append(each_element)
 
         elif action[0] == utils.Action.TAKE_FROM_CENTRE:
-            if factory_index == -1:
-                if color_of_tiles == utils.Tile.RED:
-                    if number_of_tiles == 1:
-                        if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.RED)
-                            transitions += plr_state
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.RED)
-                            transitions += plr_state
-            
-                    elif number_of_tiles == 3:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED, utils.Tile.RED )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.RED)
-                            transitions += plr_state
-
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED, utils.Tile.RED, utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED,utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.RED)
-                            plr_state.AddToFloor(utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.RED)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.RED)
-                            transitions += plr_state
-
-                elif color_of_tiles == utils.Tile.BLUE:
-                    if number_of_tiles == 1:
-                        if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.BLUE)
-                            transitions += plr_state
-            
-                    elif number_of_tiles == 3:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE, utils.Tile.BLUE )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.BLUE)
-                            transitions += plr_state
-
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE, utils.Tile.BLUE, utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE,utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.BLUE)
-                            plr_state.AddToFloor(utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.BLUE)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.BLUE)
-                            transitions += plr_state
-
-                elif color_of_tiles == utils.Tile.WHITE:
-                    if number_of_tiles == 1:
-                        if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.WHITE)
-                            transitions += plr_state
-            
-                    elif number_of_tiles == 3:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE, utils.Tile.WHITE )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.WHITE)
-                            transitions += plr_state
-
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE, utils.Tile.WHITE, utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE,utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.WHITE)
-                            plr_state.AddToFloor(utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.WHITE)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.WHITE)
-                            transitions += plr_state
-
-                elif color_of_tiles == utils.Tile.BLACK:
-                    if number_of_tiles == 1:
-                        if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.BLACK)
-                            transitions += plr_state
-            
-                    elif number_of_tiles == 3:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK, utils.Tile.BLACK )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.BLACK)
-                            transitions += plr_state
-
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK, utils.Tile.BLACK, utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK,utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.BLACK)
-                            plr_state.AddToFloor(utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.BLACK)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.BLACK)
-                            transitions += plr_state
-
-                elif color_of_tiles == utils.Tile.YELLOW:
-                    if number_of_tiles == 1:
-                        if patternLine_index == 1: 
-                            # plr_state.AddToPatternLine(patternLine_index, put_pattern_num , color_of_tiles)
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 2:
-                            plr_state.AddToPatternLine(2, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 1 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 2 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 2 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 2 , utils.Tile.YELLOW)
-                            transitions += plr_state
-            
-                    elif number_of_tiles == 3:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW, utils.Tile.YELLOW )
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 3 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 3 , utils.Tile.YELLOW)
-                            transitions += plr_state
-
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            plr_state.AddToPatternLine(1, 1 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW, utils.Tile.YELLOW, utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 2: 
-                            plr_state.AddToPatternLine(2, 2 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW,utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 3:
-                            plr_state.AddToPatternLine(3, 3 , utils.Tile.YELLOW)
-                            plr_state.AddToFloor(utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 4:
-                            plr_state.AddToPatternLine(4, 4 , utils.Tile.YELLOW)
-                            transitions += plr_state
-                        elif patternLine_index == 5:
-                            plr_state.AddToPatternLine(5, 4 , utils.Tile.YELLOW)
-                            transitions += plr_state
+            pass
 
         return transitions
     
@@ -878,21 +467,22 @@ class MDPAgent():
     
     # Start with a simple reasonable goal (might change afterwards)
     # My goal is if any column or row or set is full filled with tiles
-    # My goal is pick the number of tiles exact the same as the pattern line index
+    # My goal is pick the number of tiles exact the same as the number put on the pattern line 
     def get_goal_states(self, state):
         #if self.agentState.GetCompletedRows() or  self.agentState.GetCompletedColumns() or self.agentState.GetCompletedSets():
         #    return True
-        plr_state = state.agents[self.id]
-        if plr_state == (1, 1 , utils.Tile.RED) or (1, 1 , utils.Tile.BLUE) or (1, 1 , utils.Tile.WHITE) or  (1, 1 , utils.Tile.BLACK) or (1, 1 , utils.Tile.YELLOW):
-            return True 
-        elif (2, 2 , utils.Tile.BLUE) or (2, 2 , utils.Tile.BLUE) or (2, 2 , utils.Tile.WHITE) or  (2, 2 , utils.Tile.BLACK) or (2, 2 , utils.Tile.YELLOW):
-            return True
-        elif (3, 3 , utils.Tile.BLUE) or (3, 3 , utils.Tile.BLUE) or (3, 3 , utils.Tile.WHITE) or  (3, 3 , utils.Tile.BLACK) or (3, 3 , utils.Tile.YELLOW):
-            return True
-        elif (4, 4 , utils.Tile.BLUE) or (4, 4 , utils.Tile.BLUE) or (4, 4 , utils.Tile.WHITE) or  (4, 4 , utils.Tile.BLACK) or (4, 4 , utils.Tile.YELLOW):
+        action =  self.game_rule.getLegalActions(state, self.id)
+        tile_grab = action[2]
+        number_of_tiles = tile_grab.number
+        #color_of_tiles = tile_grab.tile_type
+        put_pattern_num = tile_grab.num_to_pattern_line
+        #patternLine_index = tile_grab.pattern_line_dest + 1
+        #factory_index = action[1] + 1
+        
+        if number_of_tiles == put_pattern_num:
             return True
         else:
-            False
+            return False
 
 
 # Reference: 
@@ -902,13 +492,20 @@ class valueIter():
     def __init__(self, _id):
         self.id = _id 
         self.mdp = MDPAgent()
-
+        self.rewards = self.mdp.get_reward()
+        self.transitions = self.mdp.get_transitions()
+        self.num_states = len(self.transitions)
+        self.num_actions = 4
+        self.discount = self.mdp.get_discount_factor()
+        self.values = np.zeros(self.num_states)
+        self.policy = None
 
     #def bellmanEqu(self, state, action, new_state):
     #    prob = 1.0
     #    new_value = prob * (self.rewards[state] + self.discount * self.values.get_value(new_state)) 
     #    return new_value
     
+
 
     #def value_iteration(self, max_iterations = 100, theta = 0.001):
     #    for i in range(max_iterations):
