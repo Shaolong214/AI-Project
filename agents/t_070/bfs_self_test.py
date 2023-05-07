@@ -1,4 +1,12 @@
+# INFORMATION ------------------------------------------------------------------------------------------------------- #
 
+
+# Author:  Steven Spratley
+# Date:    04/01/2021
+# Purpose: Implements an example breadth-first search agent for the COMP90054 competitive game environment.
+
+
+# IMPORTS AND CONSTANTS ----------------------------------------------------------------------------------------------#
 
 
 import time, random
@@ -11,11 +19,17 @@ import Azul.azul_utils as utils
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
 
+
+# FUNCTIONS ----------------------------------------------------------------------------------------------------------#
+
+
 # Defines this agent.
 class myAgent():
     def __init__(self, _id):
         self.id = _id # Agent needs to remember its own id.
-        self.game_rule = GameRule(NUM_PLAYERS)
+        self.game_rule = GameRule(NUM_PLAYERS) # Agent stores an instance of GameRule, from which to obtain functions.
+        # More advanced agents might find it useful to not be bound by the functions in GameRule, instead executing
+        # their own custom functions under GetActions and DoAction.
 
     # Generates actions from this state.
     def GetActions(self, state):
@@ -52,7 +66,11 @@ class myAgent():
                 goal_reached = number_of_tiles == pattern_line + 1
             return goal_reached
 
+            
 
+
+    # Take a list of actions and an initial state, and perform breadth-first search within a time limit.
+    # Return the first action that leads to goal, if any was found.
     def SelectAction(self, actions, rootstate):
         start_time = time.time()
         queue      = deque([ (deepcopy(rootstate),[]) ]) # Initialise queue. First node = root state and an empty path.
@@ -75,8 +93,4 @@ class myAgent():
         return random.choice(actions) # If no goal was found in the time limit, return a random action.
         
     
-# reference : # Author:  Steven Spratley
-# Date:    04/01/2021
-# Purpose: Implements an example breadth-first search agent for the COMP90054 competitive game environment.
-
-
+# END FILE -----------------------------------------------------------------------------------------------------------#

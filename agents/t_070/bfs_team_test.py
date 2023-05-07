@@ -14,6 +14,10 @@ from Azul.azul_model import AzulGameRule as GameRule
 from copy import deepcopy
 from collections import deque
 
+import Azul.azul_model
+import Azul.azul_utils as utils
+from template import GameState
+
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
 
@@ -37,10 +41,18 @@ class myAgent():
     def DoAction(self, state, action):
         score = state.agents[self.id].score
         state = self.game_rule.generateSuccessor(state, action, self.id)
+
+        if action[0] == utils.Action.TAKE_FROM_CENTRE or action[0] == utils.Action.TAKE_FROM_FACTORY:
+            # Extract the tile_grab object from the action,so we can use pattern
+            tile_grab = action[2]
+            number_of_tiles = tile_grab.number
+            goal_reached = number_of_tiles == tile_grab.pattern_line_dest + 1
+
+            return goal_reached
         
-        goal_reached = False #TODO: Students, how should agent check whether it reached goal or not
         
-        return goal_reached
+                
+
 
     # Take a list of actions and an initial state, and perform breadth-first search within a time limit.
     # Return the first action that leads to goal, if any was found.
@@ -58,7 +70,7 @@ class myAgent():
                 next_path  = path + [a]                   # Add this action to the path.
                 goal     = self.DoAction(next_state, a) # Carry out this action on the state, and check for goal
                 if goal:
-                    print(f'Move {self.turn_count}, path found:', next_path)
+                    print('path found:', next_path)
                     return next_path[0] # If the current action reached the goal, return the initial action that led there.
                 else:
                     queue.append((next_state, next_path)) # Else, simply add this state and its path to the queue.
