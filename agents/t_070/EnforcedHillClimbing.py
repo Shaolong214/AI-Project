@@ -67,26 +67,45 @@ class myAgent():
             else:
                 return False
 
-            
+    
+    def heuristicFunction(self, action):
+        pass
+
     # Reference: So far the code below is using from example.bfs (Will modify afterward)
     # Start-----------------------------------------------------------
     def SelectAction(self, actions, rootstate):
         start_time = time.time()
-        queue      = deque([ (deepcopy(rootstate),[]) ]) 
+        pathsList = []
+        queue      = deque([]) 
+        
+        initial_state = deepcopy(rootstate)
+        initial_Heuristic= self.heuristicFunction(rootstate)
+            
+        for action in actions:
+            #nextState = self.get_succ(initial_state, action)
+            #next_Heuristic= self.heuristicFunction(nextState)
+            initial_Node = (initial_state, action, initial_Heuristic, pathsList) 
+            # heapq.heappush(queue, next_Node)            
+            queue.append(initial_Node)
+
+        closed = []
  
-        while len(queue) and time.time()-start_time < THINKTIME:
-            state, path = queue.popleft() 
-            new_actions = self.GetActions(state) 
+        while len(queue) != 0 and time.time()-start_time < THINKTIME:
+            
+            currentState, action, heuristic, path = queue.popleft() 
+            new_actions = self.GetActions(currentState) 
             
             for a in new_actions:
-                next_state = deepcopy(state)              
+                next_state = deepcopy(currentState)              
                 next_path  = path + [a]                   
                 goal     = self.DoAction(next_state, a) 
                 if goal:
                     print("path found:",next_path[0])
                     return next_path[0] 
                 else:
-                    queue.append((next_state, next_path)) 
+                    state_copy = deepcopy(currentState)
+                    next_Heuristic = self.heuristicFunction(state_copy)
+                    queue.append((next_state, a, next_Heuristic, next_path)) 
         
         return random.choice(actions) 
     # End-----------------------------------------------------------------------
