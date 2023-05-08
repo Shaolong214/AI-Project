@@ -46,6 +46,10 @@ class myAgent():
             elif number_of_tiles == put_pattern_num: 
                 return True
             
+            # if not the 1st person pick up from center 
+            elif not state.first_agent_taken:
+                return True
+            
             # if the new picked up tiles can exact full fill the left over spaces in any pattern line
             elif put_foor_num == 0  and number_of_tiles != put_pattern_num:
                 for i in range(1,6):
