@@ -3,11 +3,13 @@ import time, random
 from Azul.azul_model import AzulGameRule as GameRule
 from copy import deepcopy
 import Azul.azul_utils as utils
+import math
 
-THINKTIME   = 1
+inf = math.inf
+THINKTIME   = 0.91
 NUM_PLAYERS = 2
 
-# To solve the same f value and not supported between instances of 'AzulState' and 'AzulState'" problem, make a self compare
+# To solve the same f value and not supported between instances of 'AzulState' and 'AzulState' problem, make a self compare method
 class HeapNode:
     def __init__(self, f, state, action):
         self.f = f
@@ -26,6 +28,7 @@ class myAgent():
         return self.game_rule.getLegalActions(state, self.id)
     
     def calculate_g(self, action, state):
+        
         # Make the number of tiles taken match the pattern empty space that can be put as closely as possible 
         if action[0] == utils.Action.TAKE_FROM_CENTRE or action[0] == utils.Action.TAKE_FROM_FACTORY:
             # if acton is ENDROUND Then return big value
@@ -36,8 +39,9 @@ class myAgent():
             agent_state = state.agents[self.id]
             existing_tiles = agent_state.lines_number[pattern_line_dest]
             excess_tiles = number_of_tiles + existing_tiles - (pattern_line_dest + 1)
+            #print(excess_tiles)
             return abs(excess_tiles)
-        return 9999
+        return inf
 
     def calculate_h(self, action):
     
@@ -48,9 +52,9 @@ class myAgent():
             pattern_line_dest = tile_grab.pattern_line_dest
             #print(action,pattern_line_dest)
             tiles_required = (pattern_line_dest+1)
+            #print(tiles_required)
             return abs(tiles_required)
-        return 9999
-
+        return inf 
 
     def SelectAction(self, actions, rootstate):
         start_time = time.time()
@@ -67,9 +71,7 @@ class myAgent():
         best_f = None
         
         while len(queue) and time.time() - start_time < THINKTIME:  
-            # Break out of the loop when time is up
-                
-        
+                    
             node = heapq.heappop(queue)
             f, state, action = node.f, node.state, node.action
 
@@ -78,21 +80,24 @@ class myAgent():
                 best_action = action
 
              # return a optimal solution when found       
-            if f == 0 : 
-                print("f == 0", action)
-                return action
-            else:
-                next_state = deepcopy(state)
-                new_actions = self.GetActions(next_state)
-                for new_action in new_actions:
-                    g = self.calculate_g(new_action,next_state)
-                    h = self.calculate_h(new_action)
-                    f = g 
-                    next_state = self.game_rule.generateSuccessor(deepcopy(state), new_action, self.id)
-                    heapq.heappush(queue, HeapNode(f, next_state, new_action))
+            if f == 0:
+                legal_actions = self.GetActions(deepcopy(state))
+                if action in legal_actions:
+                    print("f == 0", action)
+                    return action
+                else:
+                    next_state = deepcopy(state)
+                    new_actions = self.GetActions(next_state)
+                    for new_action in new_actions:
+                        g = self.calculate_g(new_action,next_state)
+                        h = self.calculate_h(new_action)
+                        f = g 
+                        next_state = self.game_rule.generateSuccessor(deepcopy(state), new_action, self.id)
+                        heapq.heappush(queue, HeapNode(f, next_state, new_action))
                     
+        # Handle illegal action case here
+            
         print("Time up")
-
         # When time up, return a best solution
         if best_action is not None:
             print("f != 0", best_action)
