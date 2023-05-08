@@ -1,6 +1,3 @@
-
-
-
 import time, random
 from Azul.azul_model import AzulGameRule as GameRule
 from copy import deepcopy
@@ -25,31 +22,18 @@ class myAgent():
         score = state.agents[self.id].score
         state = self.game_rule.generateSuccessor(state, action, self.id)
 
-        if action[0] == utils.Action.TAKE_FROM_FACTORY:
-
+        if action[0] in (utils.Action.TAKE_FROM_FACTORY, utils.Action.TAKE_FROM_CENTRE):
             tile_grab = action[2]
             number_of_tiles = tile_grab.number
             pattern_line = tile_grab.pattern_line_dest
+            number_to_floor = tile_grab.num_to_floor_line
             agent_state = state.agents[self.id]
             wall_state = agent_state.grid_state[pattern_line]
 
-            if (tile == 1 for tile in wall_state):
-                goal_reached = number_of_tiles == pattern_line + 1
+            if any(tile == 1 for tile in wall_state):
+                goal_reached = number_of_tiles == pattern_line + 1 and number_to_floor < number_of_tiles
             else:
-                goal_reached = number_of_tiles == pattern_line + 1
-            return goal_reached
-        
-        elif action[0] == utils.Action.TAKE_FROM_CENTRE:
-            tile_grab = action[2]
-            number_of_tiles = tile_grab.number
-            pattern_line = tile_grab.pattern_line_dest
-            agent_state = state.agents[self.id]
-            wall_state = agent_state.grid_state[pattern_line]
-
-            if (tile == 1 for tile in wall_state):
-                goal_reached = number_of_tiles == pattern_line + 1
-            else:
-                goal_reached = number_of_tiles == pattern_line + 1
+                goal_reached = number_of_tiles == pattern_line + 1 and number_to_floor < number_of_tiles
             return goal_reached
 
 
