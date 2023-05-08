@@ -82,30 +82,32 @@ class myAgent():
         initial_Heuristic= self.heuristicFunction(rootstate)
             
         for action in actions:
-            #nextState = self.get_succ(initial_state, action)
-            #next_Heuristic= self.heuristicFunction(nextState)
-            initial_Node = (initial_state, action, initial_Heuristic, pathsList) 
-            # heapq.heappush(queue, next_Node)            
+            initial_Node = (initial_state, action, initial_Heuristic, pathsList)           
             queue.append(initial_Node)
 
         closed = []
  
         while len(queue) != 0 and time.time()-start_time < THINKTIME:
-            
-            currentState, action, heuristic, path = queue.popleft() 
+
+            currentNode = queue.popleft()
+            currentState, action, heuristic, path = currentNode 
+
             new_actions = self.GetActions(currentState) 
             
             for a in new_actions:
-                next_state = deepcopy(currentState)              
-                next_path  = path + [a]                   
-                goal     = self.DoAction(next_state, a) 
-                if goal:
-                    print("path found:",next_path[0])
-                    return next_path[0] 
-                else:
-                    state_copy = deepcopy(currentState)
-                    next_Heuristic = self.heuristicFunction(state_copy)
-                    queue.append((next_state, a, next_Heuristic, next_path)) 
+
+                if not any( target == currentState for target in closed):
+                    closed.append(currentState)
+                    next_state = deepcopy(currentState)              
+                    next_path  = path + [a]                   
+                    goal     = self.DoAction(next_state, a) 
+                    if goal:
+                        print("path found:",next_path[0])
+                        return next_path[0] 
+                    else:
+                        state_copy = deepcopy(currentState)
+                        next_Heuristic = self.heuristicFunction(state_copy)
+                        queue.append((next_state, a, next_Heuristic, next_path)) 
         
         return random.choice(actions) 
     # End-----------------------------------------------------------------------
