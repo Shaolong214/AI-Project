@@ -99,26 +99,29 @@ class myAgent():
             currentNode = queue.popleft()
             currentState, currentAction, currentHeuristic, pathsList = currentNode 
 
-            new_actions = self.GetActions(currentState) 
-            
-            for a in new_actions:
-
-                if not any( target == currentState for target in closed):
+            if not any( target == currentState for target in closed):
+                    
                     closed.append(currentState)
                     
                     if currentHeuristic <= initial_Heuristic:
+                        
                         initial_state = currentState
                         
-                        next_state = deepcopy(currentState)              
-                        next_path  = pathsList + [a]                   
-                        goal = self.DoAction(next_state, a) 
+                        new_actions = self.GetActions(currentState) 
+                        for a in new_actions:
+                            current_state_copy = deepcopy(currentState)  
+                            #next_state = self.get_success(currentState, a)            
+                            next_path  = pathsList + [a]                   
+                            goal = self.DoAction(current_state_copy, a) 
                 
-                        if goal:
+                            if goal == True:
                                 print("path found:",next_path[0])
                                 return next_path[0] 
-                        else:
-                            next_Heuristic = self.heuristicFunction(next_state)
-                            queue.append((next_state, a, next_Heuristic, next_path)) 
+                            else:
+                                #next_state = self.get_success(current_state_copy, a)
+                                next_Heuristic = self.heuristicFunction(current_state_copy)
+                                next_node = current_state_copy, a, next_Heuristic, next_path
+                                queue.append(next_node)
 
         return random.choice(actions) 
     # End-----------------------------------------------------------------------
