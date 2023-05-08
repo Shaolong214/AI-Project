@@ -88,24 +88,87 @@ class myAgent():
     #         return goal_reached
 
 
+    # def DoAction(self, state, action):
+    #     score = state.agents[self.id].score
+    #     state = self.game_rule.generateSuccessor(state, action, self.id)
+
+
+    #     if action[0] in (utils.Action.TAKE_FROM_FACTORY, utils.Action.TAKE_FROM_CENTRE):
+    #         tile_grab = action[2]
+    #         number_of_tiles = tile_grab.number
+    #         pattern_line = tile_grab.pattern_line_dest
+    #         grab_tile_color = tile_grab.tile_type
+    #         number_to_floor = tile_grab.num_to_floor_line
+    #         agent_state = state.agents[self.id]
+    #         wall_state = agent_state.grid_state[pattern_line]
+
+            
+
+    #         if any(tile == 1 for tile in wall_state):
+    #             goal_reached = number_of_tiles == pattern_line + 1 
+            
+    #         elif number_of_tiles == pattern_line + 1:
+    #             goal_reached = True
+    #             return goal_reached
+
+            
+    #         else:
+    #             (grab_tile_color == agent_state.lines_tile[pattern_line]) and \
+    #             (number_of_tiles >= (pattern_line + 1) - agent_state.lines_number[pattern_line]) and \
+    #             (number_to_floor < 2)
+    #             return True
+                
+
+
     def DoAction(self, state, action):
         score = state.agents[self.id].score
         state = self.game_rule.generateSuccessor(state, action, self.id)
 
-        if action[0] in (utils.Action.TAKE_FROM_FACTORY, utils.Action.TAKE_FROM_CENTRE):
+
+        if  action[0] in (utils.Action.TAKE_FROM_FACTORY, utils.Action.TAKE_FROM_CENTRE):
             tile_grab = action[2]
             number_of_tiles = tile_grab.number
             pattern_line = tile_grab.pattern_line_dest
+            grab_tile_color = tile_grab.tile_type
             number_to_floor = tile_grab.num_to_floor_line
             agent_state = state.agents[self.id]
             wall_state = agent_state.grid_state[pattern_line]
 
             if any(tile == 1 for tile in wall_state):
-                goal_reached = number_of_tiles == pattern_line + 1 and number_to_floor < number_of_tiles
+                goal_reached = number_of_tiles == pattern_line + 1 
+            
             else:
-                goal_reached = number_of_tiles == pattern_line + 1 and number_to_floor < number_of_tiles
-            return goal_reached
+                number_of_tiles == pattern_line + 1
+                goal_reached = True
+                return goal_reached
+            
+        # elif action[0] == utils.Action.TAKE_FROM_CENTRE:
+        #     tile_grab = action[2]
+        #     number_of_tiles = tile_grab.number
+        #     pattern_line = tile_grab.pattern_line_dest
+        #     grab_tile_color = tile_grab.tile_type
+        #     number_to_floor = tile_grab.num_to_floor_line
+        #     agent_state = state.agents[self.id]
+        #     wall_state = agent_state.grid_state[pattern_line]
 
+        #     if any(tile == 1 for tile in wall_state):
+        #         goal_reached = number_of_tiles == pattern_line + 1 
+            
+        #     elif (grab_tile_color == agent_state.lines_tile[pattern_line]) and \
+        #          (number_of_tiles >= (pattern_line + 1) - agent_state.lines_number[pattern_line]) and \
+        #          (number_to_floor < 2):
+        #         return True
+        #     else:
+        #         number_of_tiles == pattern_line + 1
+        #         goal_reached = True
+        #         return goal_reached
+
+            
+
+
+
+
+            
             
 
 
@@ -124,6 +187,7 @@ class myAgent():
                 next_state = deepcopy(state)              # Copy the state.
                 next_path  = path + [a]                   # Add this action to the path.
                 goal     = self.DoAction(next_state, a) # Carry out this action on the state, and check for goal
+                
                 if goal:
                     print('path found:', next_path)
                     return next_path[0] # If the current action reached the goal, return the initial action that led there.

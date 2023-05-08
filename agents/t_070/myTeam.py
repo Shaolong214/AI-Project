@@ -26,14 +26,14 @@ class myAgent():
             tile_grab = action[2]
             number_of_tiles = tile_grab.number
             pattern_line = tile_grab.pattern_line_dest
-            number_to_floor = tile_grab.num_to_floor_line
+            # number_to_floor = tile_grab.num_to_floor_line
             agent_state = state.agents[self.id]
             wall_state = agent_state.grid_state[pattern_line]
 
             if any(tile == 1 for tile in wall_state):
-                goal_reached = number_of_tiles == pattern_line + 1 and number_to_floor < number_of_tiles
+                goal_reached = number_of_tiles == pattern_line + 1 
             else:
-                goal_reached = number_of_tiles == pattern_line + 1 and number_to_floor < number_of_tiles
+                goal_reached = number_of_tiles == pattern_line + 1
             return goal_reached
 
 
@@ -59,6 +59,8 @@ class myAgent():
         return random.choice(actions) # If no goal was found in the time limit, return a random action.
         
     
+
+
 # reference : # Author:  Steven Spratley
 # Date:    04/01/2021
 # Purpose: Implements an example breadth-first search agent for the COMP90054 competitive game environment.
