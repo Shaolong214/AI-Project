@@ -75,22 +75,28 @@ class myAgent():
     def heuristicFunction(self, action):
         h = 0 
         return h 
-
-    # Reference: So far the code below is using from example.bfs (Will modify afterward)
+    
+    # The code below is modified & referenced from the sources below:
+    # Reference 1: Week2 search algorithmns lecture slides, page 41 & 42
+    # Reference 2: aStarSearch() function in assignment 1
+    # (link: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/search.py#L116)
+    # Reference 3: My own work for assignment 1 task 1
+    # (link: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/search.py#L143)
+    # Reference 4: example.bfs 
+    # (link: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L47)
     # Start-----------------------------------------------------------
     def SelectAction(self, actions, rootstate):
         
         start_time = time.time()
         pathsList = []
         
-        queue      = deque([]) 
+        queue = deque([]) 
         initial_state = deepcopy(rootstate)
         initial_Heuristic= self.heuristicFunction(rootstate)
         
         for initial_action in actions:
             initial_Node = (initial_state, initial_action, initial_Heuristic, pathsList)           
             queue.append(initial_Node)
-            #goal =  self.DoAction(next_state, initial_action) 
 
         closed = []
 
@@ -99,25 +105,31 @@ class myAgent():
             currentNode = queue.popleft()
             currentState, currentAction, currentHeuristic, pathsList = currentNode 
 
+            # The code below reference from my work in assignment 1 task 1
+            # [Source code]: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/search.py#L200
+            # Begin--------------------------------------------------
             if not any( target == currentState for target in closed):
                     closed.append(currentState)
                     
                     if currentHeuristic < initial_Heuristic:
                         initial_state = currentState
                         break
-                        
+            # End------------------------------------------------------
+                    
+                    # The code below reference from example.bfs
+                    # [Source code]: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L54
+                    # Begin------------------------------------
                     new_actions = self.GetActions(currentState) 
                     for a in new_actions:
                         current_state_copy = deepcopy(currentState)  
-                        #next_state = self.get_success(currentState, a)            
                         next_path  = pathsList + [a]                   
                         goal = self.DoAction(current_state_copy, a) 
                 
                         if goal == True:
                             print("path found:",next_path[0])
                             return next_path[0] 
-                            
-                        #next_state = self.get_success(current_state_copy, a)
+                    # End---------------------------------------
+
                         next_Heuristic = self.heuristicFunction(current_state_copy)
                         next_node = current_state_copy, a, next_Heuristic, next_path
                         queue.append(next_node)
