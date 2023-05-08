@@ -73,7 +73,8 @@ class myAgent():
 
     
     def heuristicFunction(self, action):
-        pass
+        h = 0 
+        return h 
 
     # Reference: So far the code below is using from example.bfs (Will modify afterward)
     # Start-----------------------------------------------------------
@@ -105,20 +106,19 @@ class myAgent():
                 if not any( target == currentState for target in closed):
                     closed.append(currentState)
                     
-                    #if currentHeuristic <= initial_Heuristic:
-                    #    initial_state = currentState
+                    if currentHeuristic <= initial_Heuristic:
+                        initial_state = currentState
                         
-                    next_state = deepcopy(currentState)              
-                    next_path  = pathsList + [a]                   
-                    goal = self.DoAction(next_state, a) 
+                        next_state = deepcopy(currentState)              
+                        next_path  = pathsList + [a]                   
+                        goal = self.DoAction(next_state, a) 
                 
-                    if goal:
-                            print("path found:",next_path[0])
-                            return next_path[0] 
-                    else:
-                        #state_copy = deepcopy(currentState)
-                        next_Heuristic = self.heuristicFunction(next_state)
-                        queue.append((next_state, a, next_Heuristic, next_path)) 
+                        if goal:
+                                print("path found:",next_path[0])
+                                return next_path[0] 
+                        else:
+                            next_Heuristic = self.heuristicFunction(next_state)
+                            queue.append((next_state, a, next_Heuristic, next_path)) 
 
         return random.choice(actions) 
     # End-----------------------------------------------------------------------
