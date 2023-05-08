@@ -24,6 +24,10 @@ class myAgent():
         actions = self.game_rule.getLegalActions(state, self.id)
         return actions
     
+    def get_success(self,state, action):
+        state = self.game_rule.generateSuccessor(state, action, self.id)
+        return state
+    
     def DoAction(self, state, action):
         score = state.agents[self.id].score
         newState = self.game_rule.generateSuccessor(state, action, self.id)
@@ -74,23 +78,25 @@ class myAgent():
     # Reference: So far the code below is using from example.bfs (Will modify afterward)
     # Start-----------------------------------------------------------
     def SelectAction(self, actions, rootstate):
+        
         start_time = time.time()
         pathsList = []
-        queue      = deque([]) 
         
+        queue      = deque([]) 
         initial_state = deepcopy(rootstate)
         initial_Heuristic= self.heuristicFunction(rootstate)
-            
-        for action in actions:
-            initial_Node = (initial_state, action, initial_Heuristic, pathsList)           
+        
+        for initial_action in actions:
+            initial_Node = (initial_state, initial_action, initial_Heuristic, pathsList)           
             queue.append(initial_Node)
+            #goal =  self.DoAction(next_state, initial_action) 
 
         closed = []
- 
+
         while len(queue) != 0 and time.time()-start_time < THINKTIME:
 
             currentNode = queue.popleft()
-            currentState, action, heuristic, path = currentNode 
+            currentState, currentAction, currentHeuristic, pathsList = currentNode 
 
             new_actions = self.GetActions(currentState) 
             
@@ -98,17 +104,22 @@ class myAgent():
 
                 if not any( target == currentState for target in closed):
                     closed.append(currentState)
+                    
+                    #if currentHeuristic <= initial_Heuristic:
+                    #    initial_state = currentState
+                        
                     next_state = deepcopy(currentState)              
-                    next_path  = path + [a]                   
-                    goal     = self.DoAction(next_state, a) 
+                    next_path  = pathsList + [a]                   
+                    goal = self.DoAction(next_state, a) 
+                
                     if goal:
-                        print("path found:",next_path[0])
-                        return next_path[0] 
+                            print("path found:",next_path[0])
+                            return next_path[0] 
                     else:
-                        state_copy = deepcopy(currentState)
-                        next_Heuristic = self.heuristicFunction(state_copy)
+                        #state_copy = deepcopy(currentState)
+                        next_Heuristic = self.heuristicFunction(next_state)
                         queue.append((next_state, a, next_Heuristic, next_path)) 
-        
+
         return random.choice(actions) 
     # End-----------------------------------------------------------------------
         
