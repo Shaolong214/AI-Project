@@ -142,26 +142,29 @@ class myAgent():
                 goal_reached = True
                 return goal_reached
             
-        # elif action[0] == utils.Action.TAKE_FROM_CENTRE:
-        #     tile_grab = action[2]
-        #     number_of_tiles = tile_grab.number
-        #     pattern_line = tile_grab.pattern_line_dest
-        #     grab_tile_color = tile_grab.tile_type
-        #     number_to_floor = tile_grab.num_to_floor_line
-        #     agent_state = state.agents[self.id]
-        #     wall_state = agent_state.grid_state[pattern_line]
+        elif action[0] == utils.Action.TAKE_FROM_CENTRE:
+            tile_grab = action[2]
+            number_of_tiles = tile_grab.number
+            pattern_line = tile_grab.pattern_line_dest
+            grab_tile_color = tile_grab.tile_type
+            number_to_floor = tile_grab.num_to_floor_line
+            agent_state = state.agents[self.id]
+            wall_state = agent_state.grid_state[pattern_line]
 
-        #     if any(tile == 1 for tile in wall_state):
-        #         goal_reached = number_of_tiles == pattern_line + 1 
+            if any(tile == 1 for tile in wall_state):
+                goal_reached = number_of_tiles == pattern_line + 1 
             
-        #     elif (grab_tile_color == agent_state.lines_tile[pattern_line]) and \
-        #          (number_of_tiles >= (pattern_line + 1) - agent_state.lines_number[pattern_line]) and \
-        #          (number_to_floor < 2):
-        #         return True
-        #     else:
-        #         number_of_tiles == pattern_line + 1
-        #         goal_reached = True
-        #         return goal_reached
+            # existing_tiles = agent_state.lines_number[pattern_line_dest]
+            # excess_tiles = number_of_tiles + existing_tiles - (pattern_line_dest + 1)
+            
+            elif (grab_tile_color == agent_state.lines_tile[pattern_line]) and \
+                 (number_of_tiles >= (pattern_line + 1) - agent_state.lines_number[pattern_line]) and \
+                 (number_to_floor < 2):
+                return True
+            else:
+                number_of_tiles == pattern_line + 1
+                goal_reached = True
+                return goal_reached
 
             
 

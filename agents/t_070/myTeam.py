@@ -65,4 +65,3 @@ class myAgent():
 # Date:    04/01/2021
 # Purpose: Implements an example breadth-first search agent for the COMP90054 competitive game environment.
 
-
