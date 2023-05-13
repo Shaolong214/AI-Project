@@ -90,8 +90,9 @@ class myAgent:
         # get q value of every legal actions and store in two lists: actions and q_values
         actions, q_values = zip(*((action, self.get_q_value(state, action)) for action in legalActions))
         max_q_value = max(q_values)
-        # get best action of q value, there may have more than one best actions, if so, pick up randomly
+        # get best action of q value
         best_actions = [action for action, q_value in zip(actions, q_values) if q_value == max_q_value]
+        # there may have more than one best actions, if so, pick up randomly
         # not sure if can be replace by a multi-armed bandits algorithm.
         return random.choice(best_actions) if best_actions else None
 
