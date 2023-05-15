@@ -167,11 +167,11 @@ class myAgent():
                 succ_state_copy = deepcopy(succState)  
                 #next_path  = pathsList + [a]                   
                 goal = self.DoAction(succ_state_copy, a) 
-                print("My goal is",goal)
+                #print("My goal is",goal)
                 # End---------------------------------------
 
                 if goal == True:
-                    print("path found:", a)
+                    #print("path found:", a)
                     return a 
                     #print("h found: ", a)
                     #return a
@@ -179,18 +179,18 @@ class myAgent():
                     next_Heuristic = self.heuristicFunction(a, succ_state_copy)
                     next_node = succ_state_copy, a, next_Heuristic
                     queue.append(next_node)
-                    print(next_Heuristic)
+                    #print(next_Heuristic)
                     #queue.push(next_node,next_Heuristic)
                     #heapq.heappush(queue, Queue(next_node) )
                     #return q_a 
         
         if queue[0] is not None:
             q_state, q_a, q_Heuristic = queue[0]
-            print("h found: ", q_a)
+            #print("h found: ", q_a)
             return q_a
         else:
             randomPath = random.choice(actions)
-            print("random path found", randomPath)
+            #print("random path found", randomPath)
             return randomPath
     # End-----------------------------------------------------------------------
         
