@@ -72,16 +72,45 @@ class myAgent:
         return sum(self.weights.get(feature, 0) * f_value for feature, f_value in features.items())
     
 
+    # def SelectAction(self, actions, game_state):
+    #     if not self.train_model:
+    #         return self.best_action(game_state)
+        
+    #     action = random.choice(self.get_legal_actions(game_state)) if random.random() < 0.1 else self.best_action(game_state)
+        
+    #     new_state = self.game_rule.generateSuccessor(copy.deepcopy(game_state), action, self.id)
+    #     self.update_weight_vector(game_state, action, new_state, self.calculate_reward(self))
+        
+    #     return action
+
     def SelectAction(self, actions, game_state):
+        # If not in training mode, simply return the best action
         if not self.train_model:
             return self.best_action(game_state)
-        
-        action = random.choice(self.get_legal_actions(game_state)) if random.random() < 0.1 else self.best_action(game_state)
-        
-        new_state = self.game_rule.generateSuccessor(copy.deepcopy(game_state), action, self.id)
-        self.update_weight_vector(game_state, action, new_state, self.calculate_reward(self))
-        
-        return action
+        else:
+            # Use epsilon-greedy strategy to choose action
+            random_number = random.random()
+
+            if random_number < 0.1:
+                # Explore: select a random action
+                legal_actions = self.get_legal_actions(game_state)
+                action = random.choice(legal_actions)
+            else:
+                # Exploit: select the best action based on current knowledge
+                action = self.best_action(game_state)
+
+            # Execute action and get the new state
+            new_state = self.game_rule.generateSuccessor(copy.deepcopy(game_state), action, self.id)
+
+            # Calculate reward for the action
+            reward = self.calculate_reward(self)
+
+            # Update weight vector based on the action's reward
+            self.update_weight_vector(game_state, action, new_state, reward)
+
+            # Return the chosen action
+            return action
+
 
     def update_weight_vector(self, state, action, next_state, reward):
         """Update the weight vector."""
