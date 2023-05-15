@@ -94,10 +94,10 @@ class myAgent():
             if existing_tiles == 0:
                 if number_of_tiles <= patternLine_index:
                     leftOver = patternLine_index - number_of_tiles
-                    #print(leftOver)
+                    print(leftOver)
                     return leftOver
                 else: 
-                    #print(put_foor_num)
+                    print(put_foor_num)
                     return put_foor_num
             else:
                 leftOver = patternLine_index - existing_tiles
@@ -162,6 +162,7 @@ class myAgent():
                     # [Source code]: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L54
                     # Begin------------------------------------
                     new_actions = self.GetActions(succState) 
+                    
                     for a in new_actions:
                         succ_state_copy = deepcopy(succState)  
                         next_path  = pathsList + [a]                   
@@ -171,7 +172,7 @@ class myAgent():
                         if goal == True:
                             print("path found:", a)
                             return a 
-                        elif currentHeuristic == 0 :
+                        elif goal == False:
                             print("h found: ", next_path[0])
                             return next_path[0] 
                             #print("h found: ", a)
