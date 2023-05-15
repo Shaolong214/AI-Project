@@ -22,30 +22,10 @@ NUM_PLAYERS = 2
 # [Source code]: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/util.py#L150
 # Begin----------------------------------------
 class Queue:
-    """
-      Implements a priority queue data structure. Each inserted item
-      has a priority associated with it and the client is usually interested
-      in quick retrieval of the lowest-priority item in the queue. This
-      data structure allows O(1) access to the lowest-priority item.
-    """
-    def  __init__(self):
-        self.heap = []
-        self.count = 0
+    def  __init__(self,initial_Node):
+        self.initial_Node = initial_Node
 
-    def getMinimumPriority(self):
-        return self.heap[0][0]
 
-    def push(self, item, priority):
-        entry = (priority, self.count, item)
-        heapq.heappush(self.heap, entry)
-        self.count += 1
-
-    def pop(self):
-        (_, _, item) = heapq.heappop(self.heap)
-        return item
-
-    def isEmpty(self):
-        return len(self.heap) == 0
 # End-----------------------------------------
 
 # Defines this agent.
@@ -153,24 +133,26 @@ class myAgent():
         start_time = time.time()
         pathsList = []
         
-        #queue = deque([]) 
-        queue = Queue()
+        queue = deque([]) 
+        #queue = Queue()
+        #queue = []
         initial_state = deepcopy(rootstate)
         
         
         for initial_action in actions:
             initial_Heuristic= self.heuristicFunction(initial_action, rootstate)
             initial_Node = (initial_state, initial_action, initial_Heuristic, pathsList)     
-            #queue.append(initial_Node)
-            queue.push(initial_Node,initial_Heuristic)
+            queue.append(initial_Node)
+            #heapq.heappush(queue, Queue(initial_Node) )
+            #queue.push(initial_Node,initial_Heuristic)
 
         closed = []
 
         #while len(queue) != 0 and time.time() - start_time < THINKTIME:
-        while queue.isEmpty() == False and time.time() - start_time < THINKTIME:
+        while len(queue) == 0 and time.time() - start_time < THINKTIME:
 
-            #currentNode = queue.popleft()
-            currentNode = queue.pop()
+            currentNode = queue.popleft()
+            #currentNode = heapq.heappop(queue)
 
             currentState, currentAction, currentHeuristic, pathsList = currentNode 
 
@@ -186,29 +168,29 @@ class myAgent():
                         initial_state = currentState
                         break
             # End------------------------------------------------------
-                    
+                    succState = self.get_success(currentState, currentAction)
                     # The code below reference from example.bfs
                     # [Source code]: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L54
                     # Begin------------------------------------
-                    succState = self.get_success(currentState, currentAction)
                     new_actions = self.GetActions(succState) 
                     for a in new_actions:
                         succ_state_copy = deepcopy(succState)  
                         next_path  = pathsList + [a]                   
                         goal = self.DoAction(succ_state_copy, a) 
-                
+                    # End---------------------------------------
+
                         if goal == True:
                             print("path found:", a)
                             return a 
                         elif currentHeuristic == 0 :
                             print("h found: ", next_path[0])
                             return next_path[0] 
-                    # End---------------------------------------
 
                         next_Heuristic = self.heuristicFunction(a, succ_state_copy)
                         next_node = succ_state_copy, a, next_Heuristic, next_path
-                        #queue.append(next_node)
-                        queue.push(next_node,next_Heuristic)
+                        queue.append(next_node)
+                        #queue.push(next_node,next_Heuristic)
+                        #heapq.heappush(queue, Queue(next_node) )
         
         randomPath = random.choice(actions)
         print("my path found", randomPath)
