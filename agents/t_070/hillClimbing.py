@@ -172,10 +172,10 @@ class myAgent():
                             print("path found:", a)
                             return a 
                         elif currentHeuristic == 0 :
-                            #print("h found: ", next_path[0])
-                            #return next_path[0] 
-                            print("h found: ", a)
-                            return a
+                            print("h found: ", next_path[0])
+                            return next_path[0] 
+                            #print("h found: ", a)
+                            #return a
 
                         next_Heuristic = self.heuristicFunction(a, succ_state_copy)
                         next_node = succ_state_copy, a, next_Heuristic, next_path
