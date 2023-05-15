@@ -1,7 +1,5 @@
 # There is still room for improvement with this Astar agent, as there is no real g value (cost) for Azul, 
 # so I have set two h values to find the best move. But I'm still working on the second h value
-
-
 import heapq
 import time, random
 from Azul.azul_model import AzulGameRule as GameRule
@@ -10,7 +8,7 @@ import Azul.azul_utils as utils
 import math
 
 inf = math.inf
-THINKTIME   = 1
+THINKTIME   = 1.8
 NUM_PLAYERS = 2
 
 # To solve the same f value and not supported between instances of 'AzulState' and 'AzulState' problem, make a self compare method
@@ -45,7 +43,7 @@ class myAgent():
             existing_tiles = agent_state.lines_number[pattern_line_dest]
             excess_tiles = number_of_tiles + existing_tiles - (pattern_line_dest + 1)
             #print(excess_tiles)
-            return abs(2*excess_tiles)
+            return abs(1.5*excess_tiles)
         return inf
 
     def calculate_h(self, action,state):
