@@ -68,11 +68,11 @@ class myAgent():
             else:
                 return False
         
-        else:
-            if newScore > score: # the score at each round is bigger than previous one
-                return True
-            else:
-                return False
+        #else:
+        #    if newScore > score: # the score at each round is bigger than previous one
+        #        return True
+        #    else:
+        #        return False
 
     
     def heuristicFunction(self, action,state):
@@ -140,7 +140,7 @@ class myAgent():
         closed = []
 
         #while len(queue) != 0 and time.time() - start_time < THINKTIME:
-        while len(queue) == 0 and time.time() - start_time < THINKTIME:
+        while len(queue) != 0 and time.time() - start_time < THINKTIME:
 
             currentNode = queue.popleft()
             #currentNode = heapq.heappop(queue)
