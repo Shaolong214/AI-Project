@@ -94,10 +94,10 @@ class myAgent():
             if existing_tiles == 0:
                 if number_of_tiles <= patternLine_index:
                     leftOver = patternLine_index - number_of_tiles
-                    print(leftOver)
+                    #print(leftOver)
                     return leftOver
                 else: 
-                    print(put_foor_num)
+                    #print(put_foor_num)
                     return put_foor_num
             else:
                 leftOver = patternLine_index - existing_tiles
@@ -122,7 +122,7 @@ class myAgent():
     def SelectAction(self, actions, rootstate):
         
         start_time = time.time()
-        pathsList = []
+        #pathsList = []
         
         queue = deque([]) 
         #queue = Queue()
@@ -132,7 +132,7 @@ class myAgent():
         
         for initial_action in actions:
             initial_Heuristic= self.heuristicFunction(initial_action, rootstate)
-            initial_Node = (initial_state, initial_action, initial_Heuristic, pathsList)     
+            initial_Node = (initial_state, initial_action, initial_Heuristic)     
             queue.append(initial_Node)
             #heapq.heappush(queue, Queue(initial_Node) )
             #queue.push(initial_Node,initial_Heuristic)
@@ -144,49 +144,59 @@ class myAgent():
 
             currentNode = queue.popleft()
             #currentNode = heapq.heappop(queue)
-            currentState, currentAction, currentHeuristic, pathsList = currentNode 
+            currentState, currentAction, currentHeuristic = currentNode 
             currentHeuristic = self.heuristicFunction(currentAction, currentState)
 
             # The code below reference from my work in assignment 1 task 1
             # [Source code]: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/search.py#L200
             # Begin--------------------------------------------------
-            if not any( target == currentState for target in closed):
-                    closed.append(currentState)
+            #if not any( target == currentState for target in closed):
+            #        closed.append(currentState)
                     
-                    if currentHeuristic < initial_Heuristic:
-                        initial_state = currentState
-                        break
+            if currentHeuristic < initial_Heuristic:
+                initial_state = currentState
+                break
             # End------------------------------------------------------
-                    succState = self.get_success(currentState, currentAction)
-                    # The code below reference from example.bfs
-                    # [Source code]: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L54
-                    # Begin------------------------------------
-                    new_actions = self.GetActions(succState) 
+            succState = self.get_success(currentState, currentAction)
+            # The code below reference from example.bfs
+            # [Source code]: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L54
+            # Begin------------------------------------
+            new_actions = self.GetActions(succState) 
                     
-                    for a in new_actions:
-                        succ_state_copy = deepcopy(succState)  
-                        next_path  = pathsList + [a]                   
-                        goal = self.DoAction(succ_state_copy, a) 
-                    # End---------------------------------------
+            for a in new_actions:
+                succ_state_copy = deepcopy(succState)  
+                #next_path  = pathsList + [a]                   
+                goal = self.DoAction(succ_state_copy, a) 
+                # End---------------------------------------
 
-                        if goal == True:
-                            print("path found:", a)
-                            return a 
-                        elif goal == False:
-                            print("h found: ", next_path[0])
-                            return next_path[0] 
-                            #print("h found: ", a)
-                            #return a
-
-                        next_Heuristic = self.heuristicFunction(a, succ_state_copy)
-                        next_node = succ_state_copy, a, next_Heuristic, next_path
-                        queue.append(next_node)
-                        #queue.push(next_node,next_Heuristic)
-                        #heapq.heappush(queue, Queue(next_node) )
+                if goal == True:
+                    print("path found:", a)
+                    return a 
+                    #print("h found: ", a)
+                    #return a
+                else:
+                   
+                #else:
+                    next_Heuristic = self.heuristicFunction(a, succ_state_copy)
+                    next_node = succ_state_copy, a, next_Heuristic
+                    queue.append(next_node)
+                    print(next_Heuristic)
+                    #queue.push(next_node,next_Heuristic)
+                    #heapq.heappush(queue, Queue(next_node) )
+                    return q_a 
         
-        randomPath = random.choice(actions)
-        print("my path found", randomPath)
-        return randomPath
+        #if goal == False:
+            #q_state, q_a, q_Heuristic, q_path = queue[0]
+            #print("h found: ", q_a)
+            #return q_a 
+        if queue[0] is not None:
+            q_state, q_a, q_Heuristic = queue[0]
+            print("h found: ", q_a)
+            return q_a
+        else:
+            randomPath = random.choice(actions)
+            print("my path found", randomPath)
+            return randomPath
     # End-----------------------------------------------------------------------
         
     
