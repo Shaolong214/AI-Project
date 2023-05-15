@@ -62,15 +62,15 @@ class myAgent():
                 return True
             
             # if the number of picked up tiles is exact the same as the number of pattern line space in one row
-            elif number_of_tiles == put_pattern_num: 
+            if number_of_tiles == put_pattern_num: 
                 return True
             
             # if not the 1st person pick up from center 
-            elif not state.first_agent_taken:
+            if not state.first_agent_taken:
                 return True
             
             # if the new picked up tiles can exact full fill the left over spaces in any pattern line
-            elif put_foor_num == 0  and number_of_tiles != put_pattern_num:
+            if put_foor_num == 0  and number_of_tiles != put_pattern_num:
                 for i in range(1,6):
                     if self.agent_state.lines_tile[i] == color_of_tiles:
                         currentFilled = self.agent_state.lines_number[i]
@@ -99,6 +99,9 @@ class myAgent():
             put_foor_num = tile_grab.num_to_floor_line
 
             existing_tiles = agent_state.lines_number[patternLine_index - 1]
+
+            if put_foor_num == 0:
+                return 0 
 
             if existing_tiles == 0:
                 if number_of_tiles <= patternLine_index:
@@ -153,9 +156,7 @@ class myAgent():
 
             currentNode = queue.popleft()
             #currentNode = heapq.heappop(queue)
-
             currentState, currentAction, currentHeuristic, pathsList = currentNode 
-
             currentHeuristic = self.heuristicFunction(currentAction, currentState)
 
             # The code below reference from my work in assignment 1 task 1
@@ -183,8 +184,10 @@ class myAgent():
                             print("path found:", a)
                             return a 
                         elif currentHeuristic == 0 :
-                            print("h found: ", next_path[0])
-                            return next_path[0] 
+                            #print("h found: ", next_path[0])
+                            #return next_path[0] 
+                            print("h found: ", a)
+                            return a
 
                         next_Heuristic = self.heuristicFunction(a, succ_state_copy)
                         next_node = succ_state_copy, a, next_Heuristic, next_path
