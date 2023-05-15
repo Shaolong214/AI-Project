@@ -136,7 +136,6 @@ class myAgent():
 
             if any(tile == 1 for tile in wall_state):
                 goal_reached = number_of_tiles == pattern_line + 1 
-            
             else:
                 number_of_tiles == pattern_line + 1
                 goal_reached = True

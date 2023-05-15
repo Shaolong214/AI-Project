@@ -2,6 +2,7 @@ from Azul.azul_model import AzulGameRule as GameRule
 import json
 import os
 import random
+import copy
 
 NUM_PLAYERS = 2
 
@@ -33,14 +34,14 @@ class myAgent:
                 return json.load(f)
         else:
             return {}
-        
+
     def get_legal_actions(self, state):
         """Get all legal actions for the state."""
         return self.game_rule.getLegalActions(state, self.id)
 
     def extract_features(self, game_state, action):
         """Extract useful features from the game state and action."""
-        next_game_state = self.game_rule.generateSuccessor(game_state, action, self.id)
+        next_game_state = self.game_rule.generateSuccessor(copy.deepcopy(game_state), action, self.id)
 
         current_agent_state = game_state.agents[self.id]
         # lines_number store tiles number of each pattern line
@@ -69,6 +70,18 @@ class myAgent:
         features = self.extract_features(state, action) # get features info of the a state by an action
         # initialise accumulative sum of the product between each weights and each features.
         return sum(self.weights.get(feature, 0) * f_value for feature, f_value in features.items())
+    
+
+    def SelectAction(self, actions, game_state):
+        if not self.train_model:
+            return self.best_action(game_state)
+        
+        action = random.choice(self.get_legal_actions(game_state)) if random.random() < 0.1 else self.best_action(game_state)
+        
+        new_state = self.game_rule.generateSuccessor(copy.deepcopy(game_state), action, self.id)
+        self.update_weight_vector(game_state, action, new_state, self.calculate_reward(self))
+        
+        return action
 
     def update_weight_vector(self, state, action, next_state, reward):
         """Update the weight vector."""
@@ -85,34 +98,25 @@ class myAgent:
         print(self.weights)
 
     def best_action(self, state):
-        """Return the action that gives the highest Q value."""
+        """Select the action with the maximum Q(s, a), if multiple, choose one at random."""
         legalActions = self.get_legal_actions(state)
-        # get q value of every legal actions and store in two lists: actions and q_values
+
+        # Obtain the q value for all corresponding actions
         actions, q_values = zip(*((action, self.get_q_value(state, action)) for action in legalActions))
-        max_q_value = max(q_values)
-        # get best action of q value
-        best_actions = [action for action, q_value in zip(actions, q_values) if q_value == max_q_value]
-        # there may have more than one best actions, if so, pick up randomly
-        # not sure if can be replace by a multi-armed bandits algorithm.
-        return random.choice(best_actions) if best_actions else None
 
-    def SelectAction(self, actions, game_state):
-        """Training mode: Select, execute action and update weight vector.
-        Testing mode: Return an action. """
-        if not self.train_model:
-            return self.best_action(game_state)
-        else:
-            # implement epsilon greedy: 0.1 probabilty return a random action, 0.9 probabilty return a best acion with max Q value.
-            random_number = random.random()
-            action = random.choice(self.get_legal_actions(game_state)) if random_number < 0.1 else self.best_action(game_state)
+        # Obtain actions with the maximum qvalue (could be multiple)
+        best_actions = [action for action, q_value in zip(actions, q_values) if q_value == max(q_values)]
 
-            new_state = self.game_rule.generateSuccessor(game_state, action, self.id)
-            reward = self.calculate_reward(game_state, new_state)
-            # update weight vector, this the aim of training mode: upodate weight
-            self.update_weight_vector(game_state, action, new_state, reward)
+        if not best_actions:
+            return None
 
-    def calculate_reward(self, old_state, new_state):
+        return random.choice(best_actions)
+
+
+    def calculate_reward(self, old_state):
         """Calculate the reward. This is a placeholder function and should be overridden with a problem-specific implementation."""
         return 1
+
+
 
        
