@@ -4,7 +4,10 @@ from copy import deepcopy
 from collections import deque
 import Azul.azul_utils as utils
 from Azul.azul_model import AzulState
-    
+
+import math
+
+inf = math.inf
 
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
@@ -72,7 +75,8 @@ class myAgent():
                 return False
 
     
-    def heuristicFunction(self, action):
+    def heuristicFunction(self, action,state):
+        # Make the number of tiles taken match the pattern empty space that can be put as closely as possible 
         h = 0 
         return h 
     
@@ -92,15 +96,16 @@ class myAgent():
         
         queue = deque([]) 
         initial_state = deepcopy(rootstate)
-        initial_Heuristic= self.heuristicFunction(rootstate)
+        
         
         for initial_action in actions:
-            initial_Node = (initial_state, initial_action, initial_Heuristic, pathsList)           
+            initial_Heuristic= self.heuristicFunction(initial_action, rootstate)
+            initial_Node = (initial_state, initial_action, initial_Heuristic, pathsList)     
             queue.append(initial_Node)
 
         closed = []
 
-        while len(queue) != 0 and time.time()-start_time < THINKTIME:
+        while len(queue) != 0 and time.time() - start_time < THINKTIME:
 
             currentNode = queue.popleft()
             currentState, currentAction, currentHeuristic, pathsList = currentNode 
@@ -128,9 +133,11 @@ class myAgent():
                         if goal == True:
                             print("path found:",next_path[0])
                             return next_path[0] 
+                        #else:
+                        #    return 
                     # End---------------------------------------
 
-                        next_Heuristic = self.heuristicFunction(current_state_copy)
+                        next_Heuristic = self.heuristicFunction(a, current_state_copy)
                         next_node = current_state_copy, a, next_Heuristic, next_path
                         queue.append(next_node)
 
