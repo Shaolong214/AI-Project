@@ -6,7 +6,7 @@ import Azul.azul_utils as utils
 from Azul.azul_model import AzulState
 
 import math
-import heapq, random
+import heapq
 
 inf = math.inf
 
@@ -167,6 +167,7 @@ class myAgent():
                 succ_state_copy = deepcopy(succState)  
                 #next_path  = pathsList + [a]                   
                 goal = self.DoAction(succ_state_copy, a) 
+                print("My goal is",goal)
                 # End---------------------------------------
 
                 if goal == True:
@@ -181,7 +182,7 @@ class myAgent():
                     print(next_Heuristic)
                     #queue.push(next_node,next_Heuristic)
                     #heapq.heappush(queue, Queue(next_node) )
-                    return q_a 
+                    #return q_a 
         
         if queue[0] is not None:
             q_state, q_a, q_Heuristic = queue[0]
