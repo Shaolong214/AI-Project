@@ -123,19 +123,19 @@ class myAgent():
             if existing_tiles == 0:
                 if number_of_tiles <= patternLine_index:
                     leftOver = patternLine_index - number_of_tiles
-                    print(leftOver)
-                    return abs(leftOver)
+                    #print(leftOver)
+                    return leftOver
                 else: 
-                    print(put_foor_num)
-                    return abs(put_foor_num)
+                    #print(put_foor_num)
+                    return put_foor_num
             else:
                 leftOver = patternLine_index - existing_tiles
                 if number_of_tiles <= leftOver:
                     newLeftOver = leftOver - number_of_tiles
-                    return abs(newLeftOver)
+                    return newLeftOver
                 else:
                     newfloor = number_of_tiles - leftOver
-                    return  abs(newfloor)
+                    return  newfloor
         else:
             return inf
 
