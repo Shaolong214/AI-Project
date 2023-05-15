@@ -175,8 +175,6 @@ class myAgent():
                     #print("h found: ", a)
                     #return a
                 else:
-                   
-                #else:
                     next_Heuristic = self.heuristicFunction(a, succ_state_copy)
                     next_node = succ_state_copy, a, next_Heuristic
                     queue.append(next_node)
@@ -185,17 +183,13 @@ class myAgent():
                     #heapq.heappush(queue, Queue(next_node) )
                     return q_a 
         
-        #if goal == False:
-            #q_state, q_a, q_Heuristic, q_path = queue[0]
-            #print("h found: ", q_a)
-            #return q_a 
         if queue[0] is not None:
             q_state, q_a, q_Heuristic = queue[0]
             print("h found: ", q_a)
             return q_a
         else:
             randomPath = random.choice(actions)
-            print("my path found", randomPath)
+            print("random path found", randomPath)
             return randomPath
     # End-----------------------------------------------------------------------
         
