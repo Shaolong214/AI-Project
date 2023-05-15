@@ -16,18 +16,6 @@ NUM_PLAYERS = 2
 
 # FUNCTIONS ----------------------------------------------------------------------------------------------------------#
 
-
-   
-# The code below is modified & referenced from the sources below:
-# [Source code]: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/util.py#L150
-# Begin----------------------------------------
-class Queue:
-    def  __init__(self,initial_Node):
-        self.initial_Node = initial_Node
-
-
-# End-----------------------------------------
-
 # Defines this agent.
 class myAgent():
     def __init__(self, _id):
