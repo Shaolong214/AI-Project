@@ -1,24 +1,10 @@
 from Azul.azul_model import AzulGameRule as GameRule
-from Azul.azul_model import AzulState 
 import json
 import os
 import random
 import copy
-import Azul.azul_utils as utils
-import numpy
-
 
 NUM_PLAYERS = 2
-GRID_SIZE = 5
-grid_state = numpy.zeros((GRID_SIZE,GRID_SIZE))
-
-
-
-            # Record of the number of tiles of each colour the agent
-            # has placed in their grid (useful for end-game scoring)
-number_of = {}
-for tile in utils.Tile:
-    number_of[tile] = 0
 
 class myAgent:
     def __init__(self, _id):
@@ -73,68 +59,25 @@ class myAgent:
         next_floor_tiles_score = sum(floor_score for floor_tile_exists, floor_score 
                                      in zip(next_game_state.agents[self.id].floor,
                                             next_game_state.agents[self.id].FLOOR_SCORES) if floor_tile_exists == 1)
-        # bonus 
-        # cur_cols = current_agent_state.GetCompletedColumns()
-        # cur_sets = current_agent_state.GetCompletedSets()
-        # cur_rows = current_agent_state.GetCompletedRows()
-        # current_bonus = (cur_cols * current_agent_state.COL_BONUS) + (cur_sets * current_agent_state.SET_BONUS) + (cur_rows * current_agent_state.ROW_BONUS)
+        
+        cur_cols = current_agent_state.GetCompletedColumns()
+        cur_sets = current_agent_state.GetCompletedSets()
+        cur_rows = current_agent_state.GetCompletedRows()
+        current_bonus = (cur_cols * current_agent_state.COL_BONUS) + (cur_sets * current_agent_state.SET_BONUS) + (cur_rows * current_agent_state.ROW_BONUS)
 
-        # next_cols = next_agent_state.GetCompletedColumns()
-        # next_sets = next_agent_state.GetCompletedSets()
-        # next_rows = next_agent_state.GetCompletedRows()
-        # next_bonus = (next_cols * next_agent_state.COL_BONUS) + (next_sets * next_agent_state.SET_BONUS) + (next_rows * next_agent_state.ROW_BONUS)
+        next_cols = next_agent_state.GetCompletedColumns()
+        next_sets = next_agent_state.GetCompletedSets()
+        next_rows = next_agent_state.GetCompletedRows()
+        next_bonus = (next_cols * next_agent_state.COL_BONUS) + (next_sets * next_agent_state.SET_BONUS) + (next_rows * next_agent_state.ROW_BONUS)
 
-        # cur_cols = game_state.GetCompletedColumns()
-        # cur_sets = game_state.GetCompletedSets()
-        # cur_rows = game_state.GetCompletedRows()
-        # current_bonus = (cur_cols * game_state.COL_BONUS) + (cur_sets * game_state.SET_BONUS) + (cur_rows * game_state.ROW_BONUS)
-
-        # next_cols = next_game_state.GetCompletedColumns()
-        # next_sets = next_game_state.GetCompletedSets()
-        # next_rows = next_game_state.GetCompletedRows()
-        # next_bonus = (next_cols * next_game_state.COL_BONUS) + (next_sets * next_game_state.SET_BONUS) + (next_rows * next_game_state.ROW_BONUS)
 
         # the value of returned feature is f_value
         return {
             'complete_pattern_lines_added': next_num_completed_pattern_line - current_num_completed_pattern_line,
             'floor_score_change': next_floor_tiles_score - current_floor_tiles_score,
-            # 'bonus_change': next_bonus - current_bonus
+            'bonus_change': next_bonus - current_bonus
         }
 
-    # def GetCompletedRows(game_state):
-    #         completed = 0
-    #         for i in range(GRID_SIZE):
-    #             allin = True
-    #             for j in range(GRID_SIZE):
-    #                 if grid_state[i][j] == 0:
-    #                     allin = False
-    #                     break
-    #             if allin:
-    #                 completed += 1
-    #         return completed
-
-    #     # Compute number of completed columns in the agent's grid
-    # def GetCompletedColumns(game_state):
-    #         completed = 0
-    #         for i in range(GRID_SIZE):
-    #             allin = True
-    #             for j in range(GRID_SIZE):
-    #                 if grid_state[j][i] == 0:
-    #                     allin = False
-    #                     break
-    #             if allin:
-    #                 completed += 1
-    #         return completed
-
-    #     # Compute the number of completed tile sets in the agent's grid
-    # def GetCompletedSets(game_state):
-    #         completed = 0
-    #         for tile in utils.Tile:
-    #             if number_of[tile] == GRID_SIZE:
-    #                 completed += 1
-    #         return completed
-
-    
     def get_q_value(self, state, action):
         """Calculate the Q value."""
         features = self.extract_features(state, action) # get features info of the a state by an action
@@ -173,7 +116,7 @@ class myAgent:
             new_state = self.game_rule.generateSuccessor(copy.deepcopy(game_state), action, self.id)
 
             # Calculate reward for the action
-            reward = self.calculate_reward(self, game_state)
+            reward = self.calculate_reward(game_state, actions)
 
             # Update weight vector based on the action's reward
             self.update_weight_vector(game_state, action, new_state, reward)
@@ -218,15 +161,15 @@ class myAgent:
         # current_agent_state = game_state.agents[self.id]
 
         # Extract the features
-        curr_features = self.extract_features(self, game_state)
+        curr_features = self.extract_features(game_state, action)
 
         # Reward for each one of complete_pattern_lines_added that greater than 1 
         if curr_features['complete_pattern_lines_added'] > 1:
             reward += 1
         
         # Reward for each one of floor_score_change greater than 1 
-        if curr_features['floor_score_change'] > 1:
-            reward -= 1
+        # if curr_features['floor_score_change'] > 1:
+        #     reward -= 1
         
         # Reward for each 'bonus_change' that greater than 1
         # if curr_features['bonus_change'] > 1:
@@ -235,59 +178,4 @@ class myAgent:
         return reward
 
 
-    # def calculate_future_penalty(self, player_state):
-    #     """Estimate the penalty in the future
-
-    #     Args:
-    #         player_state: Player state
-
-    #     Returns:
-    #         The estimation value
-    #     """
-    #     future_penalty = 0
-    #     # Punish unfinished pattern line
-    #     for i in range(1, 5):
-    #         if player_state.lines_number[i] > 0:
-    #             future_penalty += 1
-    #     # Extra Punishment for fourth pattern line
-    #     if player_state.lines_number[3] == 1:
-    #         future_penalty += 1.5
-    #     if player_state.lines_number[3] == 2:
-    #         future_penalty += 0.5
-    #     # Extra Punishment for fifth pattern line
-    #     if player_state.lines_number[4] == 1:
-    #         future_penalty += 2
-    #     elif player_state.lines_number[4] == 2:
-    #         future_penalty += 1
-    #     return future_penalty
-
-    # def calculate_future_bonus(self, game_state, player_id):
-    #     """Estimate Future Bonus"""
-    #     # TODO: provide a more accurate estimation
-    #     future_bonus = 0
-    #     player_state = game_state.agent[self.id]
-    #     # Only consider cols and sets
-    #     cols = player_state.GetCompletedColumns()
-    #     sets = player_state.GetCompletedSets()
-    #     rows = player_state.GetCompletedRows()
-    #     bonus = (cols * player_state.COL_BONUS) + (sets * player_state.SET_BONUS) + (rows * player_state.ROW_BONUS)
-    #     # It is ok to get the first player, however, since we can't get enough iteration, not consider this now.
-    #     if game_state.next_first_player == player_id:
-    #         future_bonus += 1
-    #     future_bonus += bonus
-    #     return future_bonus
-
-    # def calculate_future_reward(self, game_state, player_id):
-    #     """Use to calculate the reward of the future round
-
-    #     Args:
-    #         game_state: Current game state, the game state should be a end of a round
-    #         player_id: The id of the player
-
-    #     Returns:
-    #         The estimation value
-    #     """
-    #     player_state = game_state.players[player_id]
-                
-    #     return self.calculate_future_bonus(game_state, player_id) - self.calculate_future_penalty(player_state)
-
+       
