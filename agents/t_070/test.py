@@ -70,7 +70,6 @@ class myAgent:
         next_rows = next_agent_state.GetCompletedRows()
         next_bonus = (next_cols * next_agent_state.COL_BONUS) + (next_sets * next_agent_state.SET_BONUS) + (next_rows * next_agent_state.ROW_BONUS)
 
-
         # the value of returned feature is f_value
         return {
             'complete_pattern_lines_added': next_num_completed_pattern_line - current_num_completed_pattern_line,
@@ -168,12 +167,12 @@ class myAgent:
             reward += 1
         
         # Reward for each one of floor_score_change greater than 1 
-        # if curr_features['floor_score_change'] > 1:
-        #     reward -= 1
+        if curr_features['floor_score_change'] > 1:
+            reward -= 1
         
         # Reward for each 'bonus_change' that greater than 1
-        # if curr_features['bonus_change'] > 1:
-        #     reward += 1
+        if curr_features['bonus_change'] > 1:
+            reward += 1
             
         return reward
 
