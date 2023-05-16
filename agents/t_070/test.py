@@ -164,15 +164,15 @@ class myAgent:
 
         # Reward for each one of complete_pattern_lines_added that greater than 1 
         if curr_features['complete_pattern_lines_added'] > 1:
-            reward += 1
+            reward = curr_features['complete_pattern_lines_added']
         
         # Reward for each one of floor_score_change greater than 1 
         if curr_features['floor_score_change'] > 1:
-            reward -= 1
+            reward = - curr_features['floor_score_change']
         
         # Reward for each 'bonus_change' that greater than 1
         if curr_features['bonus_change'] > 1:
-            reward += 1
+            reward = curr_features['bonus_change']
             
         return reward
 
