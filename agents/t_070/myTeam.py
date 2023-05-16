@@ -8,7 +8,7 @@ import Azul.azul_utils as utils
 import math
 
 inf = math.inf
-THINKTIME   = 1.8
+THINKTIME   = 1.5
 NUM_PLAYERS = 2
 
 # To solve the same f value and not supported between instances of 'AzulState' and 'AzulState' problem, make a self compare method
@@ -43,7 +43,7 @@ class myAgent():
             existing_tiles = agent_state.lines_number[pattern_line_dest]
             excess_tiles = number_of_tiles + existing_tiles - (pattern_line_dest + 1)
             #print(excess_tiles)
-            return abs(1.5*excess_tiles)
+            return abs(50*excess_tiles)
         return inf
 
     def calculate_h(self, action,state):
@@ -77,9 +77,10 @@ class myAgent():
             if pattern_line_dest < agent_state.GRID_SIZE - 1 and grid_state[pattern_line_dest + 1][grid_col] == 1:
                 adjacency_score += 1
 
-            return 4 - adjacency_score
+            return (4 - adjacency_score)
 
         return inf
+    
 
     def SelectAction(self, actions, rootstate):
         start_time = time.time()
@@ -89,7 +90,7 @@ class myAgent():
         for action in actions:  
             g = self.calculate_g(action,rootstate)
             h = self.calculate_h(action,rootstate)
-            f = g + h
+            f = g + h 
             next_state = self.game_rule.generateSuccessor(deepcopy(rootstate), action, self.id)
             heapq.heappush(queue, HeapNode(f, next_state, action))
             
@@ -116,9 +117,9 @@ class myAgent():
                     next_state = deepcopy(state)
                     new_actions = self.GetActions(next_state)
                     for new_action in new_actions:
-                        g = self.calculate_g(new_action,next_state)
-                        h = self.calculate_h(new_action,next_state)
-                        f = g + h
+                        g = self.calculate_g(action,rootstate)
+                        h = self.calculate_h(action,rootstate)
+                        f = g + h 
                         next_state = self.game_rule.generateSuccessor(deepcopy(state), new_action, self.id)
                         heapq.heappush(queue, HeapNode(f, next_state, new_action))
             

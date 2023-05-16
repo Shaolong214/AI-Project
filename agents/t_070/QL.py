@@ -6,7 +6,41 @@ import copy
 
 NUM_PLAYERS = 2
 
+
 class myAgent:
+    # def run():
+    #     # Initialize the game and the agents
+    #     game_rule = GameRule(NUM_PLAYERS)
+    #     agents = [myAgent(i) for i in range(NUM_PLAYERS)]
+
+    #     # Initial game state
+    #     game_state = game_rule.getInitialState()
+
+    #     # Number of episodes to run
+    #     num_episodes = 100
+
+    #     for episode in range(num_episodes):
+    #         # Load weights at the start of each episode
+    #         for agent in agents:
+    #             agent.load_weights()
+
+    #         # Reset the game state at the start of each episode
+    #         game_state = game_rule.getInitialState()
+
+    #         # Play the game until it's over
+    #         while not game_rule.isGameOver(game_state):
+    #             for agent in agents:
+    #                 actions = agent.get_legal_actions(game_state)
+    #                 action = agent.SelectAction(actions, game_state)
+    #                 game_state = game_rule.generateSuccessor(game_state, action, agent.id)
+
+    #         # After the game is over, save the weights
+    #         for agent in agents:
+    #             agent.save_weights()
+
+    #         print(f"Episode {episode + 1} completed.")
+
+
     def __init__(self, _id):
         self.id = _id 
         self.game_rule = GameRule(NUM_PLAYERS)
@@ -17,10 +51,13 @@ class myAgent:
         
         # save the weight after training one episode (one round of game), then load the weight use to train second 
         # episode (or in next round of game)
-        self.weights = {}  # weight vector for every feature
+ # weight vector for every feature
 
         self.weights_file = 'weights.json'
         self.weights = self.load_weights()  # Load weights from file if available
+        self.weights = self.save_weights()
+        if self.weights is None:
+            self.weights = {}
 
     def save_weights(self):
         """Save the weights to a json file."""
@@ -59,10 +96,22 @@ class myAgent:
         next_floor_tiles_score = sum(floor_score for floor_tile_exists, floor_score 
                                      in zip(next_game_state.agents[self.id].floor,
                                             next_game_state.agents[self.id].FLOOR_SCORES) if floor_tile_exists == 1)
+        
+        cur_cols = current_agent_state.GetCompletedColumns()
+        cur_sets = current_agent_state.GetCompletedSets()
+        cur_rows = current_agent_state.GetCompletedRows()
+        current_bonus = (cur_cols * current_agent_state.COL_BONUS) + (cur_sets * current_agent_state.SET_BONUS) + (cur_rows * current_agent_state.ROW_BONUS)
+
+        next_cols = next_agent_state.GetCompletedColumns()
+        next_sets = next_agent_state.GetCompletedSets()
+        next_rows = next_agent_state.GetCompletedRows()
+        next_bonus = (next_cols * next_agent_state.COL_BONUS) + (next_sets * next_agent_state.SET_BONUS) + (next_rows * next_agent_state.ROW_BONUS)
+
         # the value of returned feature is f_value
         return {
             'complete_pattern_lines_added': next_num_completed_pattern_line - current_num_completed_pattern_line,
-            'floor_score_change': next_floor_tiles_score - current_floor_tiles_score 
+            'floor_score_change': next_floor_tiles_score - current_floor_tiles_score,
+            'bonus_change': next_bonus - current_bonus
         }
 
     def get_q_value(self, state, action):
@@ -89,6 +138,7 @@ class myAgent:
             return self.best_action(game_state)
         else:
             # Use epsilon-greedy strategy to choose action
+            
             random_number = random.random()
 
             if random_number < 0.1:
@@ -103,7 +153,7 @@ class myAgent:
             new_state = self.game_rule.generateSuccessor(copy.deepcopy(game_state), action, self.id)
 
             # Calculate reward for the action
-            reward = self.calculate_reward(self)
+            reward = self.calculate_reward(game_state, actions)
 
             # Update weight vector based on the action's reward
             self.update_weight_vector(game_state, action, new_state, reward)
@@ -142,10 +192,27 @@ class myAgent:
         return random.choice(best_actions)
 
 
-    def calculate_reward(self, old_state):
-        """Calculate the reward. This is a placeholder function and should be overridden with a problem-specific implementation."""
-        return 1
+    def calculate_reward(self, game_state, action): 
+        """Calculate the reward based on the extracted features."""
+        reward = 0        
+        # current_agent_state = game_state.agents[self.id]
 
+        # Extract the features
+        curr_features = self.extract_features(game_state, action)
+
+        # Reward for each one of complete_pattern_lines_added that greater than 1 
+        if curr_features['complete_pattern_lines_added'] > 1:
+            reward = curr_features['complete_pattern_lines_added']
+        
+        # Reward for each one of floor_score_change greater than 1 
+        if curr_features['floor_score_change'] > 1:
+            reward = - curr_features['floor_score_change']
+        
+        # Reward for each 'bonus_change' that greater than 1
+        if curr_features['bonus_change'] > 1:
+            reward = curr_features['bonus_change']
+            
+        return reward
 
 
        
