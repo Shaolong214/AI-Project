@@ -6,7 +6,41 @@ import copy
 
 NUM_PLAYERS = 2
 
+
 class myAgent:
+    # def run():
+    #     # Initialize the game and the agents
+    #     game_rule = GameRule(NUM_PLAYERS)
+    #     agents = [myAgent(i) for i in range(NUM_PLAYERS)]
+
+    #     # Initial game state
+    #     game_state = game_rule.getInitialState()
+
+    #     # Number of episodes to run
+    #     num_episodes = 100
+
+    #     for episode in range(num_episodes):
+    #         # Load weights at the start of each episode
+    #         for agent in agents:
+    #             agent.load_weights()
+
+    #         # Reset the game state at the start of each episode
+    #         game_state = game_rule.getInitialState()
+
+    #         # Play the game until it's over
+    #         while not game_rule.isGameOver(game_state):
+    #             for agent in agents:
+    #                 actions = agent.get_legal_actions(game_state)
+    #                 action = agent.SelectAction(actions, game_state)
+    #                 game_state = game_rule.generateSuccessor(game_state, action, agent.id)
+
+    #         # After the game is over, save the weights
+    #         for agent in agents:
+    #             agent.save_weights()
+
+    #         print(f"Episode {episode + 1} completed.")
+
+
     def __init__(self, _id):
         self.id = _id 
         self.game_rule = GameRule(NUM_PLAYERS)
@@ -17,10 +51,13 @@ class myAgent:
         
         # save the weight after training one episode (one round of game), then load the weight use to train second 
         # episode (or in next round of game)
-        self.weights = {}  # weight vector for every feature
+ # weight vector for every feature
 
         self.weights_file = 'weights.json'
         self.weights = self.load_weights()  # Load weights from file if available
+        self.weights = self.save_weights()
+        if self.weights is None:
+            self.weights = {}
 
     def save_weights(self):
         """Save the weights to a json file."""
@@ -101,6 +138,7 @@ class myAgent:
             return self.best_action(game_state)
         else:
             # Use epsilon-greedy strategy to choose action
+            
             random_number = random.random()
 
             if random_number < 0.1:
