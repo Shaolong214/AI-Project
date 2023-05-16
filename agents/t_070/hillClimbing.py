@@ -16,7 +16,6 @@ NUM_PLAYERS = 2
 
 # FUNCTIONS ----------------------------------------------------------------------------------------------------------#
 
-# Defines this agent.
 class myAgent():
     def __init__(self, _id):
         self.id = _id
@@ -31,11 +30,7 @@ class myAgent():
         state = self.game_rule.generateSuccessor(state, action, self.id)
         return state
     
-    def DoAction(self, state, action):
-        score = state.agents[self.id].score
-        newState = self.game_rule.generateSuccessor(state, action, self.id)
-        newScore = newState.agents[self.id].score
-
+    def checkGoal(self, state, action):
         if action != "ENDROUND" and action != "STARTROUND":
             tile_grab = action[2]
             number_of_tiles = tile_grab.number
@@ -67,12 +62,6 @@ class myAgent():
                             return True
             else:
                 return False
-        
-        #else:
-        #    if newScore > score: # the score at each round is bigger than previous one
-        #        return True
-        #    else:
-        #        return False
 
     
     def heuristicFunction(self, action,state):
@@ -94,10 +83,8 @@ class myAgent():
             if existing_tiles == 0:
                 if number_of_tiles <= patternLine_index:
                     leftOver = patternLine_index - number_of_tiles
-                    #print(leftOver)
                     return leftOver
                 else: 
-                    #print(put_foor_num)
                     return put_foor_num
             else:
                 leftOver = patternLine_index - existing_tiles
@@ -110,7 +97,7 @@ class myAgent():
         else:
             return inf
 
-    # The code below is modified & referenced from the sources below:
+    # Reference List: 
     # Reference 1: Week2 search algorithmns lecture slides, page 41 & 42
     # Reference 2: aStarSearch() function in assignment 1
     # (link: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/search.py#L116)
@@ -122,75 +109,52 @@ class myAgent():
     def SelectAction(self, actions, rootstate):
         
         start_time = time.time()
-        #pathsList = []
-        
         queue = deque([]) 
-        #queue = Queue()
-        #queue = []
         initial_state = deepcopy(rootstate)
-        
         
         for initial_action in actions:
             initial_Heuristic= self.heuristicFunction(initial_action, rootstate)
-            initial_Node = (initial_state, initial_action, initial_Heuristic)     
+            initial_Node = (initial_Heuristic, initial_state, initial_action)     
             queue.append(initial_Node)
-            #heapq.heappush(queue, Queue(initial_Node) )
-            #queue.push(initial_Node,initial_Heuristic)
 
         closed = []
 
-        #while len(queue) != 0 and time.time() - start_time < THINKTIME:
         while len(queue) != 0 and time.time() - start_time < THINKTIME:
 
             currentNode = queue.popleft()
-            #currentNode = heapq.heappop(queue)
-            currentState, currentAction, currentHeuristic = currentNode 
-            #currentHeuristic = self.heuristicFunction(currentAction, currentState)
+            currentHeuristic, currentState, currentAction = currentNode 
 
             # The code below reference from my work in assignment 1 task 1
             # [Source code]: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/search.py#L200
             # Begin--------------------------------------------------
-            if not any( target == currentState for target in closed):
+            if currentState not in closed:
                     closed.append(currentState)
                     
                     if currentHeuristic < initial_Heuristic:
                         initial_state = currentState
                         break
             # End------------------------------------------------------
-                    #succState = self.get_success(currentState, currentAction)
+                    
                     # The code below reference from example.bfs
                     # [Source code]: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L54
-            # Begin------------------------------------
+                    # Begin------------------------------------
                     new_actions = self.GetActions(currentState) 
-                    
                     for a in new_actions:
-                        current_state_copy = deepcopy(currentState)  
-                        #next_path  = pathsList + [a]                   
-                        goal = self.DoAction(current_state_copy, a) 
-                        #print("My goal is",goal)
-                # End---------------------------------------
+                        current_state_copy = deepcopy(currentState)              
+                        goal = self.checkGoal(current_state_copy, a) 
+                    # End---------------------------------------
 
                         if goal == True:
-                            print("path found:", a)
                             return a 
-                            #print("h found: ", a)
-                            #return a
-                        
                         next_Heuristic = self.heuristicFunction(a, current_state_copy)
-                        next_node = current_state_copy, a, next_Heuristic
+                        next_node = next_Heuristic, current_state_copy, a
                         queue.append(next_node)
-                    #print(next_Heuristic)
-                    #queue.push(next_node,next_Heuristic)
-                    #heapq.heappush(queue, Queue(next_node) )
-                    #return q_a 
         
         if queue[0] is not None:
-            q_state, q_a, q_Heuristic = queue[0]
-            print("h found: ", q_a)
+            q_Heuristic, q_state, q_a = queue[0]
             return q_a
         else:
             randomPath = random.choice(actions)
-            print("random path found", randomPath)
             return randomPath
     # End-----------------------------------------------------------------------
         
