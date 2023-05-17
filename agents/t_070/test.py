@@ -47,7 +47,7 @@ class myAgent:
 
         self.alpha = 0.5  # learning rate
         self.discount = 0.9  # discount factor
-        self.train_model = False
+        self.train_model = True
         
         # save the weight after training one episode (one round of game), then load the weight use to train second 
         # episode (or in next round of game)
@@ -75,6 +75,42 @@ class myAgent:
     def get_legal_actions(self, state):
         """Get all legal actions for the state."""
         return self.game_rule.getLegalActions(state, self.id)
+    
+
+    # def GetCompletedRows(self,state):
+    #         completed = 0
+    #         for i in range(self.GRID_SIZE):
+    #             allin = True
+    #             for j in range(self.GRID_SIZE):
+    #                 if self.grid_state[i][j] == 0:
+    #                     allin = False
+    #                     break
+    #             if allin:
+    #                 completed += 1
+    #         return completed
+
+        # Compute number of completed columns in the agent's grid
+    # def GetCompletedColumns(self):
+    #         completed = 0
+    #         for i in range(self.GRID_SIZE):
+    #             allin = True
+    #             for j in range(self.GRID_SIZE):
+    #                 if self.grid_state[j][i] == 0:
+    #                     allin = False
+    #                     break
+    #             if allin:
+    #                 completed += 1
+    #         return completed
+
+    #     # Compute the number of completed tile sets in the agent's grid
+    # def GetCompletedSets(self):
+    #         completed = 0
+    #         for tile in utils.Tile:
+    #             if self.number_of[tile] == self.GRID_SIZE:
+    #                 completed += 1
+    #         return completed
+
+
 
     def extract_features(self, game_state, action):
         """Extract useful features from the game state and action."""
@@ -97,15 +133,28 @@ class myAgent:
                                      in zip(next_game_state.agents[self.id].floor,
                                             next_game_state.agents[self.id].FLOOR_SCORES) if floor_tile_exists == 1)
         
-        cur_cols = current_agent_state.GetCompletedColumns()
-        cur_sets = current_agent_state.GetCompletedSets()
+        # cur_cols = current_agent_state.GetCompletedColumns()
+        # cur_sets = current_agent_state.GetCompletedSets()
         cur_rows = current_agent_state.GetCompletedRows()
-        current_bonus = (cur_cols * current_agent_state.COL_BONUS) + (cur_sets * current_agent_state.SET_BONUS) + (cur_rows * current_agent_state.ROW_BONUS)
-
-        next_cols = next_agent_state.GetCompletedColumns()
-        next_sets = next_agent_state.GetCompletedSets()
+        current_bonus =  (cur_rows * current_agent_state.ROW_BONUS)
+# (cur_cols * current_agent_state.COL_BONUS) + (cur_sets * current_agent_state.SET_BONUS) +
+        # next_cols = next_agent_state.GetCompletedColumns()
+        # next_sets = next_agent_state.GetCompletedSets()
         next_rows = next_agent_state.GetCompletedRows()
-        next_bonus = (next_cols * next_agent_state.COL_BONUS) + (next_sets * next_agent_state.SET_BONUS) + (next_rows * next_agent_state.ROW_BONUS)
+        next_bonus = (next_rows * next_agent_state.ROW_BONUS)
+# (next_cols * next_agent_state.COL_BONUS) + (next_sets * next_agent_state.SET_BONUS) + 
+
+
+
+
+
+
+
+
+
+
+
+
 
         # the value of returned feature is f_value
         return {
@@ -261,11 +310,11 @@ class myAgent:
 
         # Reward for each one of complete_pattern_lines_added that greater than 1 
         if curr_features['complete_pattern_lines_added'] > 1:
-            reward = curr_features['complete_pattern_lines_added']
+            reward += 1
         
         # Reward for each one of floor_score_change greater than 1 
         if curr_features['floor_score_change'] > 1:
-            reward = -curr_features['floor_score_change']
+            reward -= 1
         
         # Reward for each 'bonus_change' that greater than 1
         if curr_features['bonus_change'] > 1:
