@@ -3,8 +3,16 @@ import json
 import os
 import random
 import copy
+import numpy
+
 
 NUM_PLAYERS = 2
+GRID_SIZE = 5
+FLOOR_SCORES = [-1,-1,-2,-2,-2,-3,-3]
+ROW_BONUS = 2
+COL_BONUS = 7
+SET_BONUS = 10
+grid_state = numpy.zeros((GRID_SIZE,GRID_SIZE))
 
 
 class myAgent:
@@ -76,13 +84,13 @@ class myAgent:
         """Get all legal actions for the state."""
         return self.game_rule.getLegalActions(state, self.id)
     
-
-    # def GetCompletedRows(self,state):
+# agent_state.grid_state[pattern_line]
+    # def GetCompletedRows(game_state):
     #         completed = 0
-    #         for i in range(self.GRID_SIZE):
+    #         for i in range(GRID_SIZE):
     #             allin = True
-    #             for j in range(self.GRID_SIZE):
-    #                 if self.grid_state[i][j] == 0:
+    #             for j in range(GRID_SIZE):
+    #                 if game_state.grid_state[i][j] == 0:
     #                     allin = False
     #                     break
     #             if allin:
@@ -133,28 +141,42 @@ class myAgent:
                                      in zip(next_game_state.agents[self.id].floor,
                                             next_game_state.agents[self.id].FLOOR_SCORES) if floor_tile_exists == 1)
         
-        # cur_cols = current_agent_state.GetCompletedColumns()
-        # cur_sets = current_agent_state.GetCompletedSets()
-        cur_rows = current_agent_state.GetCompletedRows()
-        current_bonus =  (cur_rows * current_agent_state.ROW_BONUS)
-# (cur_cols * current_agent_state.COL_BONUS) + (cur_sets * current_agent_state.SET_BONUS) +
-        # next_cols = next_agent_state.GetCompletedColumns()
-        # next_sets = next_agent_state.GetCompletedSets()
-        next_rows = next_agent_state.GetCompletedRows()
-        next_bonus = (next_rows * next_agent_state.ROW_BONUS)
-# (next_cols * next_agent_state.COL_BONUS) + (next_sets * next_agent_state.SET_BONUS) + 
+#         # cur_cols = current_agent_state.GetCompletedColumns()
+#         # cur_sets = current_agent_state.GetCompletedSets()
+#         cur_rows = current_agent_state.GetCompletedRows()
+#         current_bonus =  (cur_rows * current_agent_state.ROW_BONUS)
+# # (cur_cols * current_agent_state.COL_BONUS) + (cur_sets * current_agent_state.SET_BONUS) +
+#         # next_cols = next_agent_state.GetCompletedColumns()
+#         # next_sets = next_agent_state.GetCompletedSets()
+#         next_rows = next_agent_state.GetCompletedRows()
+#         next_bonus = (next_rows * next_agent_state.ROW_BONUS)
+# # (next_cols * next_agent_state.COL_BONUS) + (next_sets * next_agent_state.SET_BONUS) + 
 
-
-
-
-
-
-
-
-
-
-
-
+        completed = 0
+        current_bonus = 0
+        for i in range(GRID_SIZE):
+            allin = True
+            for j in range(GRID_SIZE):
+                if current_agent_state.grid_state[i][j] == 0:
+                    allin = False
+                    break
+            if allin:
+                completed += 1
+                current_bonus = completed*ROW_BONUS
+            
+    
+        next_completed = 0
+        next_bonus = 0
+        for i in range(GRID_SIZE):
+            allin = True
+            for j in range(GRID_SIZE):
+                if next_agent_state.grid_state[i][j] == 0:
+                    allin = False
+                    break
+            if allin:
+                next_completed += 1
+                next_bonus = next_completed*ROW_BONUS
+            
 
         # the value of returned feature is f_value
         return {
@@ -317,8 +339,7 @@ class myAgent:
             reward -= 1
         
         # Reward for each 'bonus_change' that greater than 1
-        if curr_features['bonus_change'] > 1:
-            reward = curr_features['bonus_change']
+        reward += curr_features['bonus_change']
         
         # If none of the conditions are met, assign a default reward
         if reward == 0:
