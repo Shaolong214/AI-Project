@@ -34,7 +34,7 @@ class myAgent:
         self.weights = {}  # weight vector for every feature
 
         self.weights_file = 'weights.json'
-        self.weights = self.load_weights()  # Load weights from file if available
+          # Load weights from file if available
 
     def save_weights(self):
         """Save the weights to a json file."""
@@ -184,6 +184,7 @@ class myAgent:
 
     def update_weight_vector(self, state, action, next_state, reward):
         """Update the weight vector."""
+        
         nextstep_actions = self.get_legal_actions(next_state)
         nextstep_q_values = [self.get_q_value(next_state, a) for a in nextstep_actions] #get q value for every states by each legal action
         max_q_next_step = max(nextstep_q_values, default=0)
@@ -210,7 +211,6 @@ class myAgent:
             return None
 
         return random.choice(best_actions)
-
 
     def calculate_reward(self, game_state, action): 
         """Calculate the reward based on the extracted features."""

@@ -47,7 +47,7 @@ class myAgent:
 
         self.alpha = 0.5  # learning rate
         self.discount = 0.9  # discount factor
-        self.train_model = True
+        self.train_model = False
         
         # save the weight after training one episode (one round of game), then load the weight use to train second 
         # episode (or in next round of game)
@@ -55,7 +55,7 @@ class myAgent:
 
         self.weights_file = 'weights.json'
         self.weights = self.load_weights()  # Load weights from file if available
-        self.weights = self.save_weights()
+
         if self.weights is None:
             self.weights = {}
 
@@ -114,11 +114,20 @@ class myAgent:
             'bonus_change': next_bonus - current_bonus
         }
 
+    # def get_q_value(self, state, action):
+    #     """Calculate the Q value."""
+    #     features = self.extract_features(state, action) # get features info of the a state by an action
+    #     # initialise accumulative sum of the product between each weights and each features.
+    #     return sum(self.weights.get(feature, 0) * f_value for feature, f_value in features.items())
+    
     def get_q_value(self, state, action):
-        """Calculate the Q value."""
-        features = self.extract_features(state, action) # get features info of the a state by an action
-        # initialise accumulative sum of the product between each weights and each features.
-        return sum(self.weights.get(feature, 0) * f_value for feature, f_value in features.items())
+        features = self.extract_features(state, action)
+        sum = 0
+        for feature, f_value in features.items():
+            if feature in self.weights:
+                sum += self.weights[feature] * f_value
+        return sum
+
     
 
     # def SelectAction(self, actions, game_state):
@@ -151,7 +160,7 @@ class myAgent:
 
             # Execute action and get the new state
             new_state = self.game_rule.generateSuccessor(copy.deepcopy(game_state), action, self.id)
-
+            
             # Calculate reward for the action
             reward = self.calculate_reward(game_state, actions)
 
@@ -164,6 +173,7 @@ class myAgent:
 
     def update_weight_vector(self, state, action, next_state, reward):
         """Update the weight vector."""
+        self.weights = self.load_weights()
         nextstep_actions = self.get_legal_actions(next_state)
         nextstep_q_values = [self.get_q_value(next_state, a) for a in nextstep_actions] #get q value for every states by each legal action
         max_q_next_step = max(nextstep_q_values, default=0)
@@ -174,7 +184,35 @@ class myAgent:
         for feature_name, f_value in features.items():
             # assign 0 to weight if have not visited before
             self.weights[feature_name] = self.weights.get(feature_name, 0) + self.alpha * delta * f_value
+        self.save_weights()
         print(self.weights)
+
+
+    # def update_weight_vector(self, state, action, next_state, reward):
+    #     """Update the weight vector."""
+
+    #     # Load weights from the json file if it exists
+    #     if os.path.exists(self.weights_file):
+    #         with open(self.weights_file, 'r') as f:
+    #             self.weights = json.load(f)
+
+    #     nextstep_actions = self.get_legal_actions(next_state)
+    #     nextstep_q_values = [self.get_q_value(next_state, a) for a in nextstep_actions] #get q value for every states by each legal action
+    #     max_q_next_step = max(nextstep_q_values, default=0)
+
+    #     delta = reward + self.discount * max_q_next_step - self.get_q_value(state, action)
+
+    #     features = self.extract_features(state, action)
+    #     for feature_name, f_value in features.items():
+    #         # assign 0 to weight if have not visited before
+    #         self.weights[feature_name] = self.weights.get(feature_name, 0) + self.alpha * delta * f_value
+
+    #     # Save the weights to a json file
+    #     with open(self.weights_file, 'w') as f:
+    #         json.dump(self.weights, f)
+
+    #     print(self.weights)
+
 
     def best_action(self, state):
         """Select the action with the maximum Q(s, a), if multiple, choose one at random."""
@@ -192,10 +230,31 @@ class myAgent:
         return random.choice(best_actions)
 
 
+    # def calculate_reward(self, game_state, action): 
+    #     """Calculate the reward based on the extracted features."""
+    #     reward = 0        
+    #     # current_agent_state = game_state.agents[self.id]
+
+    #     # Extract the features
+    #     curr_features = self.extract_features(game_state, action)
+
+    #     # Reward for each one of complete_pattern_lines_added that greater than 1 
+    #     if curr_features['complete_pattern_lines_added'] > 1:
+    #         reward += curr_features['complete_pattern_lines_added']
+        
+    #     # Reward for each one of floor_score_change greater than 1 
+    #     if curr_features['floor_score_change'] > 1:
+    #         reward -= curr_features['floor_score_change']
+        
+    #     # Reward for each 'bonus_change' that greater than 1
+    #     if curr_features['bonus_change'] > 1:
+    #         reward += curr_features['bonus_change']
+            
+    #     return reward
+
     def calculate_reward(self, game_state, action): 
         """Calculate the reward based on the extracted features."""
-        reward = 0        
-        # current_agent_state = game_state.agents[self.id]
+        reward = 0
 
         # Extract the features
         curr_features = self.extract_features(game_state, action)
@@ -206,13 +265,17 @@ class myAgent:
         
         # Reward for each one of floor_score_change greater than 1 
         if curr_features['floor_score_change'] > 1:
-            reward = - curr_features['floor_score_change']
+            reward = -curr_features['floor_score_change']
         
         # Reward for each 'bonus_change' that greater than 1
         if curr_features['bonus_change'] > 1:
             reward = curr_features['bonus_change']
-            
-        return reward
+        
+        # If none of the conditions are met, assign a default reward
+        if reward == 0:
+            reward = -0.1
+        
+        return reward 
 
 
        
