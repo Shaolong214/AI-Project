@@ -8,6 +8,7 @@ from collections import deque
 import Azul.azul_utils as utils
 from Azul.azul_model import AzulState
 import numpy as np
+import copy
 
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
@@ -39,387 +40,61 @@ class MDPAgent():
     def get_transitions(self, state, action):
         transitions = []
 
-        # I feel that I have checked my actions are legal action, thus, it would also be "valid_add" 
-        #action = self.get_actions(state)
-        #plr_state = state.agents[self.id]
-        #plr_state.agent_trace.actions[-1].append(action)
+        if action[0] == utils.Action.TAKE_FROM_FACTORY or action[0] == utils.Action.TAKE_FROM_CENTRE:
+            stateCopy = copy.deepcopy(state)
 
-        tile_grab = action[2]
-        number_of_tiles = tile_grab.number
-        color_of_tiles = tile_grab.tile_type
-        #put_pattern_num = tile_grab.num_to_pattern_line
-        patternLine_index = tile_grab.pattern_line_dest + 1
-        factory_index = action[1] + 1
-        #put_foor_num = tile_grab.num_to_floor_line
+            next_state = self.game_rule.generateSuccessor(stateCopy, action, self.id)
+            agent_state = state.agents[self.id]
 
-        if action == "ENDROUND":
-            #state = self.get_states(state, action)
-            #transitions += state
-            pass
+            tile_grab = action[2]
+            number_of_tiles = tile_grab.number
+            color_of_tiles = tile_grab.tile_type
+            put_pattern_num = tile_grab.num_to_pattern_line
+            patternLine_index = tile_grab.pattern_line_dest + 1
+            factory_index = action[1] + 1
+            put_foor_num = tile_grab.num_to_floor_line
 
-        elif action == "STARTROUND":
-            # get_states() already provide all the necessary infromation for this state (e.g., number, color etc)
-            #state = self.get_states(state, action)
-            #transitions += state
-            pass
+            # [(state, action, probability)]
+            prob = 1
+            for i in range(1,6):
+                s_new = next_state.lines_number[i] 
+                s_old = agent_state.lines_number[i]
+                leftOver = patternLine_index - s_old
+            # P(s' = line 1 exist 1 | s = 1st line empty, a = pick up 1 tile) = 1
+            # P(s' = line 2 exist 2 | s = 2nd line empty, a = pick up 2 same colored tiles) = 1
+            # P(s' = line 3 exist 3 | s = 3rd line empty, a = pick up 3 same colored tiles) = 1
+            # P(s' = line 4 exist 4 | s = 4th line empty, a = pick up 4 same colored tiles) = 1
+            # P(s' = line 5 exist 5 | s = 5th line empty, a = pick up 5 same colored tiles) = 1
+                if s_new == patternLine_index and s_old == 0 and number_of_tiles == patternLine_index:
+                    transitionEle = s_new, s_old, action, prob  
+                    transitions.append(transitionEle)
+            # P(s' = line 2 exist 2 | s = 2nd line exist 1 tile, a = pick up 1 same colored tile) = 1
+            # P(s' = line 3 exist 3 | s = 3rd line exist 1 tile, a = pick up 2 same colored tiles) = 1
+            # P(s' = line 3 exist 3 | s = 3rd line exist 2 tile, a = pick up 1 same colored tiles) = 1
+            # P(s' = line 4 exist 4 | s = 4th line exist 1 tile, a = pick up 3 same colored tile) = 1
+            # P(s' = line 4 exist 4 | s = 4th line exist 2 tile, a = pick up 2 same colored tiles) = 1
+            # P(s' = line 4 exist 4 | s = 4th line exist 3 tile, a = pick up 1 same colored tiles) = 1
+            # P(s' = line 5 exist 4 | s = 5th line exist 1 tile, a = pick up 4 same colored tile) = 1
+            # P(s' = line 5 exist 4 | s = 5th line exist 2 tile, a = pick up 3 same colored tiles) = 1
+            # P(s' = line 5 exist 4 | s = 5th line exist 3 tile, a = pick up 2 same colored tiles) = 1
+            # P(s' = line 5 exist 4 | s = 5th line exist 4 tile, a = pick up 1 same colored tiles) = 1
+                elif s_new == patternLine_index and number_of_tiles == leftOver:
+                    transitionEle = s_new, s_old, action, prob  
+                    transitions.append(transitionEle)
+            
+            
+                                                                                                                                                      
 
-        elif action[0] == utils.Action.TAKE_FROM_FACTORY:
+
+
             # after take action: pick tiles from factory
             # it need to get all x number of y colored tile from factory z & put on ith line or floor or bag
             # E.g., "Agent 1 takes 1 yellow(Y) tiles from factory1 1Y placed in pattern line 1"
-            # E.f., "Agent 1 takes 3 white(w) tiles from centre 2W placed in pattern line 3 1W placed in floor line"
+            # E.g., "Agent 1 takes 3 white(w) tiles from centre 2W placed in pattern line 3 1W placed in floor line"
             # E.g., "Agent 1 takes 4 yellow(Y) tiles from centre 4Y placed in floor line"
-            for factory_index in range(1,6): # For factory indexed 1,2,3,4,5
-                
-                if color_of_tiles == utils.Tile.RED:
-                
-                    if number_of_tiles == 1:
-                
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'R', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'R', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'R', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'R', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'R', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'R', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'R', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'R', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'R', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'R', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-            
-                    elif number_of_tiles == 3:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'R', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'R', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'R', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'R', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'R', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-            
+            # put 1 W on line 1 --> line 1 exist 1 W & put 2 B on line 2 etc 
 
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'R', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'R', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'R', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'R', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'R', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-
-                elif color_of_tiles == utils.Tile.BLUE:
-                    if number_of_tiles == 1:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'B', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'B', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'B', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'B', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'B', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'B', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'B', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'B', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'B', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'B', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-            
-                    elif number_of_tiles == 3:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'B', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'B', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'B', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'B', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'B', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'B', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'B', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'B', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'B', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'B', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-
-                elif color_of_tiles == utils.Tile.WHITE:
-                    if number_of_tiles == 1:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'W', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'W', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'W', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'W', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'W', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'W', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'W', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'W', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'W', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'W', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-            
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'W', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'W', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'W', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'W', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'W', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'W', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'W', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'W', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'W', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'W', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-
-                elif color_of_tiles == utils.Tile.BLACK:
-                    if number_of_tiles == 1:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'K', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'K', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'K', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'K', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'K', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'K', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'K', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'K', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'K', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'K', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-            
-                    elif number_of_tiles == 3:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'K', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'K', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'K', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'K', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'K', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'K', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'K', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'K', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'K', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'K', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-
-                elif color_of_tiles == utils.Tile.YELLOW:
-                    if number_of_tiles == 1:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'Y', 1, 1, 1, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'Y', 1, 1, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'Y', 1, 1, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'Y', 1, 1, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'Y', 1, 1, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        
-                    elif number_of_tiles == 2:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'Y', 2, 1, 1, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'Y', 2, 2, 2, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'Y', 2, 2, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'Y', 2, 2, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'Y', 2, 2, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-            
-                    elif number_of_tiles == 3:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'Y', 3, 1, 1, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'Y', 3, 2, 2, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'Y', 3, 3, 3, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'Y', 3, 3, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'Y', 3, 3, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-
-                    elif number_of_tiles == 4:
-                        if patternLine_index == 1: 
-                            each_element = [factory_index,'Y', 4, 1, 1, 3] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 2:
-                            each_element = [factory_index,'Y', 4, 2, 2, 2] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 3:
-                            each_element = [factory_index,'Y', 4, 3, 3, 1] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 4:
-                            each_element = [factory_index,'Y', 4, 4, 4, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-                        elif patternLine_index == 5:
-                            each_element = [factory_index,'Y', 4, 4, 5, 0] # factoryX, coloredX, num_TilesX, num_PatternX, pattern_indxX, num_FloorX
-                            transitions.append(each_element)
-
-        elif action[0] == utils.Action.TAKE_FROM_CENTRE:
-            pass
+            transitions.append()
 
         return transitions
     
@@ -465,24 +140,42 @@ class MDPAgent():
         initialState = self.game_rule.initialGameState()
         return initialState
     
+
     # Start with a simple reasonable goal (might change afterwards)
     # My goal is if any column or row or set is full filled with tiles
     # My goal is pick the number of tiles exact the same as the number put on the pattern line 
-    def get_goal_states(self, state):
-        #if self.agentState.GetCompletedRows() or  self.agentState.GetCompletedColumns() or self.agentState.GetCompletedSets():
-        #    return True
-        action =  self.game_rule.getLegalActions(state, self.id)
-        tile_grab = action[2]
-        number_of_tiles = tile_grab.number
-        #color_of_tiles = tile_grab.tile_type
-        put_pattern_num = tile_grab.num_to_pattern_line
-        #patternLine_index = tile_grab.pattern_line_dest + 1
-        #factory_index = action[1] + 1
-        
-        if number_of_tiles == put_pattern_num:
-            return True
-        else:
-            return False
+    def get_goal_states(self, state, action):
+        if action != "ENDROUND" and action != "STARTROUND":
+            tile_grab = action[2]
+            number_of_tiles = tile_grab.number
+            color_of_tiles = tile_grab.tile_type
+            put_pattern_num = tile_grab.num_to_pattern_line
+            patternLine_index = tile_grab.pattern_line_dest + 1
+            factory_index = action[1] + 1
+            put_foor_num = tile_grab.num_to_floor_line
+
+            # if no tile put on floor
+            if put_foor_num == 0 : 
+                return True
+            
+            # if the number of picked up tiles is exact the same as the number of pattern line space in one row
+            if number_of_tiles == put_pattern_num: 
+                return True
+            
+            # if not the 1st person pick up from center 
+            if not state.first_agent_taken:
+                return True
+            
+            # if the new picked up tiles can exact full fill the left over spaces in any pattern line
+            if put_foor_num == 0  and number_of_tiles != put_pattern_num:
+                for i in range(1,6):
+                    if self.agent_state.lines_tile[i] == color_of_tiles:
+                        currentFilled = self.agent_state.lines_number[i]
+                        leftOver = patternLine_index - currentFilled
+                        if leftOver   == number_of_tiles:
+                            return True
+            else:
+                return False
 
 
 # Reference: 
