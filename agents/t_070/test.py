@@ -5,7 +5,6 @@ import random
 import copy
 import numpy
 
-
 NUM_PLAYERS = 2
 GRID_SIZE = 5
 FLOOR_SCORES = [-1,-1,-2,-2,-2,-3,-3]
@@ -13,7 +12,6 @@ ROW_BONUS = 2
 COL_BONUS = 7
 SET_BONUS = 10
 grid_state = numpy.zeros((GRID_SIZE,GRID_SIZE))
-
 
 class myAgent:
     # def run():
@@ -47,7 +45,6 @@ class myAgent:
     #             agent.save_weights()
 
     #         print(f"Episode {episode + 1} completed.")
-
 
     def __init__(self, _id):
         self.id = _id 
@@ -119,7 +116,6 @@ class myAgent:
     #         return completed
 
 
-
     def extract_features(self, game_state, action):
         """Extract useful features from the game state and action."""
         next_game_state = self.game_rule.generateSuccessor(copy.deepcopy(game_state), action, self.id)
@@ -140,6 +136,18 @@ class myAgent:
         next_floor_tiles_score = sum(floor_score for floor_tile_exists, floor_score 
                                      in zip(next_game_state.agents[self.id].floor,
                                             next_game_state.agents[self.id].FLOOR_SCORES) if floor_tile_exists == 1)
+        completed = 0
+        current_bonus = 0
+        for i in range(GRID_SIZE):
+            allin = True
+            for j in range(GRID_SIZE):
+                if current_agent_state.grid_state[i][j] == 0:
+                    allin = False
+                    break
+            if allin:
+                completed += 1
+                current_bonus = completed*ROW_BONUS
+
         
 #         # cur_cols = current_agent_state.GetCompletedColumns()
 #         # cur_sets = current_agent_state.GetCompletedSets()
@@ -152,37 +160,27 @@ class myAgent:
 #         next_bonus = (next_rows * next_agent_state.ROW_BONUS)
 # # (next_cols * next_agent_state.COL_BONUS) + (next_sets * next_agent_state.SET_BONUS) + 
 
-        completed = 0
-        current_bonus = 0
-        for i in range(GRID_SIZE):
-            allin = True
-            for j in range(GRID_SIZE):
-                if current_agent_state.grid_state[i][j] == 0:
-                    allin = False
-                    break
-            if allin:
-                completed += 1
-                current_bonus = completed*ROW_BONUS
+
             
     
-        next_completed = 0
-        next_bonus = 0
-        for i in range(GRID_SIZE):
-            allin = True
-            for j in range(GRID_SIZE):
-                if next_agent_state.grid_state[i][j] == 0:
-                    allin = False
-                    break
-            if allin:
-                next_completed += 1
-                next_bonus = next_completed*ROW_BONUS
+        # next_completed = 0
+        # next_bonus = 0
+        # for i in range(GRID_SIZE):
+        #     allin = True
+        #     for j in range(GRID_SIZE):
+        #         if next_agent_state.grid_state[i][j] == 0:
+        #             allin = False
+        #             break
+        #     if allin:
+        #         next_completed += 1
+        #         next_bonus = next_completed*ROW_BONUS
             
 
         # the value of returned feature is f_value
         return {
             'complete_pattern_lines_added': next_num_completed_pattern_line - current_num_completed_pattern_line,
             'floor_score_change': next_floor_tiles_score - current_floor_tiles_score,
-            'bonus_change': next_bonus - current_bonus
+            'bonus_change': current_bonus 
         }
 
     # def get_q_value(self, state, action):
@@ -199,7 +197,6 @@ class myAgent:
                 sum += self.weights[feature] * f_value
         return sum
 
-    
 
     # def SelectAction(self, actions, game_state):
     #     if not self.train_model:
@@ -238,9 +235,11 @@ class myAgent:
             # Update weight vector based on the action's reward
             self.update_weight_vector(game_state, action, new_state, reward)
 
+            #if end of round, save
+            #if start of round, load
+            
             # Return the chosen action
             return action
-
 
     def update_weight_vector(self, state, action, next_state, reward):
         """Update the weight vector."""
@@ -257,7 +256,6 @@ class myAgent:
             self.weights[feature_name] = self.weights.get(feature_name, 0) + self.alpha * delta * f_value
         self.save_weights()
         print(self.weights)
-
 
     # def update_weight_vector(self, state, action, next_state, reward):
     #     """Update the weight vector."""
@@ -291,13 +289,10 @@ class myAgent:
 
         # Obtain the q value for all corresponding actions
         actions, q_values = zip(*((action, self.get_q_value(state, action)) for action in legalActions))
-
         # Obtain actions with the maximum qvalue (could be multiple)
         best_actions = [action for action, q_value in zip(actions, q_values) if q_value == max(q_values)]
-
         if not best_actions:
             return None
-
         return random.choice(best_actions)
 
 
@@ -343,8 +338,7 @@ class myAgent:
         
         # If none of the conditions are met, assign a default reward
         if reward == 0:
-            reward = -0.1
-        
+            reward -= 0.1
         return reward 
 
 
