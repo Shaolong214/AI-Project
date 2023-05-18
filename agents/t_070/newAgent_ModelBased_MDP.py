@@ -64,9 +64,8 @@ class MDPAgent():
             # P(s' = line 2 exist 2 | s = 2nd line empty, a = pick up 2 same colored tiles) = 1
             # P(s' = line 3 exist 3 | s = 3rd line empty, a = pick up 3 same colored tiles) = 1
             # P(s' = line 4 exist 4 | s = 4th line empty, a = pick up 4 same colored tiles) = 1
-            # P(s' = line 5 exist 5 | s = 5th line empty, a = pick up 5 same colored tiles) = 1
-                if s_new == patternLine_index and s_old == 0 and number_of_tiles == patternLine_index:
-                    transitionEle = s_new, s_old, action, prob  
+                if i != 5 and s_new == patternLine_index and s_old == 0 and number_of_tiles == patternLine_index:
+                    transitionEle = i, s_new, s_old, action, color_of_tiles, prob  
                     transitions.append(transitionEle)
             # P(s' = line 2 exist 2 | s = 2nd line exist 1 tile, a = pick up 1 same colored tile) = 1
             # P(s' = line 3 exist 3 | s = 3rd line exist 1 tile, a = pick up 2 same colored tiles) = 1
@@ -78,8 +77,14 @@ class MDPAgent():
             # P(s' = line 5 exist 4 | s = 5th line exist 2 tile, a = pick up 3 same colored tiles) = 1
             # P(s' = line 5 exist 4 | s = 5th line exist 3 tile, a = pick up 2 same colored tiles) = 1
             # P(s' = line 5 exist 4 | s = 5th line exist 4 tile, a = pick up 1 same colored tiles) = 1
-                elif s_new == patternLine_index and number_of_tiles == leftOver:
-                    transitionEle = s_new, s_old, action, prob  
+                elif s_new == patternLine_index and s_old != 0 and number_of_tiles == leftOver and color_of_tiles == agent_state.lines_tile[i]:
+                    transitionEle = i, s_new, s_old, action, color_of_tiles, prob  
+                    transitions.append(transitionEle)
+            # P(s' = line 1 exist 1 & 1 on floor | s = 1st line empty, a = pick up 2 same colored tiles) = 1
+            # P(s' = line 2 exist 2 & 1 on floor | s = 2nd line empty, a = pick up 3 same colored tiles) = 1
+            # P(s' = line 3 exist 3 & 1 on floor | s = 3rd line empty, a = pick up 4 same colored tiles) = 1
+                elif i != 4 and i != 5 and s_new == patternLine_index and s_old == 0 and number_of_tiles == patternLine_index + 1:
+                    transitionEle = i, s_new, s_old, action, color_of_tiles, prob  
                     transitions.append(transitionEle)
             
             
