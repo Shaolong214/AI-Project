@@ -104,15 +104,11 @@ class myAgent():
                     for action in new_actions:
                         goal = self.checkGoal(currentState, action) 
                         if goal == False:
-                           # succ = self.get_success(currentState,action )
                             stackWhole.push(currentState, action)
+                            randomPath = random.choice(actions)
+                            return randomPath
                         else:
-                            print("path",action)
                             return action
-                    
-        randomPath = random.choice(actions)
-        print("random",randomPath)
-        return randomPath
     # End-----------------------------------------------------------------------
         
     
