@@ -83,7 +83,7 @@ class myAgent():
             if f == 0:
                 legal_actions = self.GetActions(deepcopy(state))
                 if action in legal_actions:
-                    print("f == 0", action)
+                    #print("f == 0", action)
                     return action
                 else:
                     next_state = deepcopy(state)
@@ -97,10 +97,10 @@ class myAgent():
                     
         # Handle illegal action case here
             
-        print("Time up")
+        #print("Time up")
         # When time up, return a best solution
         if best_action is not None:
-            print("f != 0", best_action)
+            #print("f != 0", best_action)
             return best_action
         else:
             print("queue is empty, choosing a random action")

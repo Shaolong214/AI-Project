@@ -43,7 +43,7 @@ class myAgent():
             existing_tiles = agent_state.lines_number[pattern_line_dest]
             excess_tiles = number_of_tiles + existing_tiles - (pattern_line_dest + 1)
             #print(excess_tiles)
-            return abs(50*excess_tiles)
+            return abs(5*excess_tiles)
         return inf
 
     def calculate_h(self, action,state):
