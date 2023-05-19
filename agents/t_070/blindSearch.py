@@ -25,7 +25,7 @@ class myStack():
         self.stack.append(node)
 
     def pop(self):
-        if self.is_empty() == False:
+        if self.is_empty() != True:
             node = self.stack.pop()
             state, action = node
             return state, action 
@@ -55,6 +55,7 @@ class myAgent():
     
     def checkGoal(self, state, action):
         if action != "ENDROUND" and action != "STARTROUND":
+        #action[0] == utils.Action.TAKE_FROM_FACTORY or action[0] == utils.Action.TAKE_FROM_CENTRE:
             tile_grab = action[2]
             number_of_tiles = tile_grab.number
             color_of_tiles = tile_grab.tile_type
@@ -63,8 +64,8 @@ class myAgent():
             factory_index = action[1] + 1
             put_foor_num = tile_grab.num_to_floor_line
             
-            agent_state = state.agents[self.id]
-            existing_tiles = agent_state.lines_number[patternLine_index - 1]
+            #agent_state = state.agents[self.id]
+            #existing_tiles = agent_state.lines_number[patternLine_index - 1]
             
             # if no tile put on floor
             if put_foor_num == 0 : 
@@ -75,8 +76,8 @@ class myAgent():
                 return True
             
             # if not the 1st person pick up from center 
-            if not state.first_agent_taken:
-                return True
+            #if not state.first_agent_taken:
+            #    return True
             
             # if the new picked up tiles can exact full fill the left over spaces in any pattern line
             if put_foor_num == 0  and number_of_tiles != put_pattern_num:
@@ -86,14 +87,6 @@ class myAgent():
                         leftOver = patternLine_index - currentFilled
                         if leftOver   == number_of_tiles:
                             return True
-                        
-            if existing_tiles == 0:
-                if number_of_tiles == patternLine_index:
-                    return True
-            elif existing_tiles != 0:
-                leftOver = patternLine_index - existing_tiles
-                if number_of_tiles == leftOver:
-                    return True
                 
             else:
                 return False
@@ -106,36 +99,37 @@ class myAgent():
     # Start-----------------------------------------------------------
     
     def SelectAction(self, actions, rootstate):
-        
         start_time = time.time()
-        stack = myStack() # DFS use Stack 
+        stackWhole = myStack() # DFS use Stack 
         closed = []
         goal = False
-        
         for initial_action in actions:  
-            stack.push(rootstate, initial_action)
+            #if initial_action != "ENDROUND" and initial_action != "STARTROUND":
+                stackWhole.push(rootstate, initial_action)
+                #node = rootstate, initial_action
+                #stackWhole.append(node)
+                while stackWhole.is_empty() != True and time.time() - start_time < THINKTIME:
+                    #node = stackWhole.pop()
+                    #currentState, currentAction = node
+                    currentState, currentAction = stackWhole.pop()
 
-        while goal == False and stack.is_empty == True and time.time() - start_time < THINKTIME:
-
-            currentState, currentAction = stack.pop()
-            
-            if currentState not in closed:
-                closed.append(currentState)
-                nextState = self.get_success(currentState, currentAction)
-                # The code below reference from example.bfs
-                # [Source code]: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L54
-                # Begin------------------------------------
-                new_actions = self.GetActions(nextState) 
-                for action in new_actions:         
-                    goal = self.checkGoal(new_actions, action) 
-                # End---------------------------------------
-
-                    if goal == True:
-                        return action
-                    stack.push(nextState, action)
-        
-
+                    if currentState not in closed:
+                        closed.append(currentState)
+                        nextState = self.get_success(currentState, currentAction)
+                        new_actions = self.GetActions(nextState) 
+                        for action in new_actions:
+                            #if action != "ENDROUND" and initial_action != "STARTROUND":         
+                                goal = self.checkGoal(new_actions, action) 
+                                if goal == False:
+                                    #newNode = nextState, action
+                                    #stackWhole.append(newNode)
+                                    stackWhole.push(nextState, action)
+                                else:
+                                    print("path",action)
+                                    return action
+                    
         randomPath = random.choice(actions)
+        print("random",randomPath)
         return randomPath
     # End-----------------------------------------------------------------------
         
