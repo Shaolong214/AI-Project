@@ -96,19 +96,19 @@ class myAgent():
         goal = False
         for initial_action in actions:  
             stackWhole.push(rootstate, initial_action)
-            while goal == False and stackWhole.is_empty() != True and time.time() - start_time < THINKTIME:
-                currentState, currentAction = stackWhole.pop()
-                if currentState not in closed:
-                    closed.append(currentState)
-                    new_actions = self.GetActions(currentState) 
-                    for action in new_actions:
-                        goal = self.checkGoal(currentState, action) 
-                        if goal == False:
-                            stackWhole.push(currentState, action)
-                            randomPath = random.choice(actions)
-                            return randomPath
-                        else:
-                            return action
+        if goal == False and stackWhole.is_empty() != True and time.time() - start_time < THINKTIME:
+            currentState, currentAction = stackWhole.pop()
+            if currentState not in closed:
+                closed.append(currentState)
+                new_actions = self.GetActions(currentState) 
+                for action in new_actions:
+                    goal = self.checkGoal(currentState, action) 
+                    if goal == False:
+                        stackWhole.push(currentState, action)
+                        randomPath = random.choice(actions)
+                        return randomPath
+                    else:
+                        return action
     # End-----------------------------------------------------------------------
         
     
