@@ -108,15 +108,14 @@ class myAgent():
     def SelectAction(self, actions, rootstate):
         
         start_time = time.time()
-        # DFS use Stack 
-        stack = myStack()
+        stack = myStack() # DFS use Stack 
+        closed = []
+        goal = False
         
         for initial_action in actions:  
             stack.push(rootstate, initial_action)
 
-        closed = []
-
-        while stack.is_empty == True and time.time() - start_time < THINKTIME:
+        while goal == False and stack.is_empty == True and time.time() - start_time < THINKTIME:
 
             currentState, currentAction = stack.pop()
             
