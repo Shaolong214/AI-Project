@@ -55,7 +55,6 @@ class myAgent():
     
     def checkGoal(self, state, action):
         if action != "ENDROUND" and action != "STARTROUND":
-        #action[0] == utils.Action.TAKE_FROM_FACTORY or action[0] == utils.Action.TAKE_FROM_CENTRE:
             tile_grab = action[2]
             number_of_tiles = tile_grab.number
             color_of_tiles = tile_grab.tile_type
@@ -63,10 +62,7 @@ class myAgent():
             patternLine_index = tile_grab.pattern_line_dest + 1
             factory_index = action[1] + 1
             put_foor_num = tile_grab.num_to_floor_line
-            
-            #agent_state = state.agents[self.id]
-            #existing_tiles = agent_state.lines_number[patternLine_index - 1]
-            
+
             # if no tile put on floor
             if put_foor_num == 0 : 
                 return True
@@ -74,10 +70,6 @@ class myAgent():
             # if the number of picked up tiles is exact the same as the number of pattern line space in one row
             if number_of_tiles == put_pattern_num: 
                 return True
-            
-            # if not the 1st person pick up from center 
-            #if not state.first_agent_taken:
-            #    return True
             
             # if the new picked up tiles can exact full fill the left over spaces in any pattern line
             if put_foor_num == 0  and number_of_tiles != put_pattern_num:
@@ -87,11 +79,10 @@ class myAgent():
                         leftOver = patternLine_index - currentFilled
                         if leftOver   == number_of_tiles:
                             return True
-                
             else:
                 return False
-
-
+        
+            
     # Reference List: 
     # Reference 1: Week2 search algorithmns lecture slides
     # Reference 2: example.bfs 
@@ -104,29 +95,19 @@ class myAgent():
         closed = []
         goal = False
         for initial_action in actions:  
-            #if initial_action != "ENDROUND" and initial_action != "STARTROUND":
-                stackWhole.push(rootstate, initial_action)
-                #node = rootstate, initial_action
-                #stackWhole.append(node)
-                while stackWhole.is_empty() != True and time.time() - start_time < THINKTIME:
-                    #node = stackWhole.pop()
-                    #currentState, currentAction = node
-                    currentState, currentAction = stackWhole.pop()
-
-                    if currentState not in closed:
-                        closed.append(currentState)
-                        nextState = self.get_success(currentState, currentAction)
-                        new_actions = self.GetActions(nextState) 
-                        for action in new_actions:
-                            #if action != "ENDROUND" and initial_action != "STARTROUND":         
-                                goal = self.checkGoal(new_actions, action) 
-                                if goal == False:
-                                    #newNode = nextState, action
-                                    #stackWhole.append(newNode)
-                                    stackWhole.push(nextState, action)
-                                else:
-                                    print("path",action)
-                                    return action
+            stackWhole.push(rootstate, initial_action)
+            while stackWhole.is_empty() != True and time.time() - start_time < THINKTIME:
+                currentState, currentAction = stackWhole.pop()
+                if currentState not in closed:
+                    closed.append(currentState)
+                    new_actions = self.GetActions(currentState) 
+                    for action in new_actions:
+                        goal = self.checkGoal(new_actions, action) 
+                        if goal == False:
+                            stackWhole.push(currentState, action)
+                        else:
+                            print("path",action)
+                            return action
                     
         randomPath = random.choice(actions)
         print("random",randomPath)
