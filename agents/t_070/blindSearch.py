@@ -96,14 +96,15 @@ class myAgent():
         goal = False
         for initial_action in actions:  
             stackWhole.push(rootstate, initial_action)
-            while stackWhole.is_empty() != True and time.time() - start_time < THINKTIME:
+            while goal == False and stackWhole.is_empty() != True and time.time() - start_time < THINKTIME:
                 currentState, currentAction = stackWhole.pop()
                 if currentState not in closed:
                     closed.append(currentState)
                     new_actions = self.GetActions(currentState) 
                     for action in new_actions:
-                        goal = self.checkGoal(new_actions, action) 
+                        goal = self.checkGoal(currentState, action) 
                         if goal == False:
+                           # succ = self.get_success(currentState,action )
                             stackWhole.push(currentState, action)
                         else:
                             print("path",action)
