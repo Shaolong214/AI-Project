@@ -1,145 +1,65 @@
-from template import Agent
-import random
-
-
 import time, random
 from Azul.azul_model import AzulGameRule as GameRule
 from copy import deepcopy
 from collections import deque
 import Azul.azul_utils as utils
-from Azul.azul_model import AzulState
-    
 
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
 
-
-# FUNCTIONS ----------------------------------------------------------------------------------------------------------#
-
-
 # Defines this agent.
 class myAgent():
     def __init__(self, _id):
-        self.id = _id
-        self.game_rule = GameRule(NUM_PLAYERS) 
-        self.agentState = AzulState.AgentState
+        self.id = _id # Agent needs to remember its own id.
+        self.game_rule = GameRule(NUM_PLAYERS)
 
+    # Generates actions from this state.
     def GetActions(self, state):
-        actions = self.game_rule.getLegalActions(state, self.id)
-        return actions
-    
-    def get_success(self,state, action):
-        state = self.game_rule.generateSuccessor(state, action, self.id)
-        return state
-    
+        return self.game_rule.getLegalActions(state, self.id)
+                    
     def DoAction(self, state, action):
         score = state.agents[self.id].score
-        newState = self.game_rule.generateSuccessor(state, action, self.id)
-        newScore = newState.agents[self.id].score
+        state = self.game_rule.generateSuccessor(state, action, self.id)
 
-        if action != "ENDROUND" and action != "STARTROUND":
+        if action[0] in (utils.Action.TAKE_FROM_FACTORY, utils.Action.TAKE_FROM_CENTRE):
             tile_grab = action[2]
             number_of_tiles = tile_grab.number
-            color_of_tiles = tile_grab.tile_type
-            put_pattern_num = tile_grab.num_to_pattern_line
-            patternLine_index = tile_grab.pattern_line_dest + 1
-            factory_index = action[1] + 1
-            put_foor_num = tile_grab.num_to_floor_line
+            pattern_line = tile_grab.pattern_line_dest
+            # number_to_floor = tile_grab.num_to_floor_line
+            agent_state = state.agents[self.id]
+            wall_state = agent_state.grid_state[pattern_line]
 
-            # if no tile put on floor
-            if put_foor_num == 0 : 
-                return True
-            
-            # if the number of picked up tiles is exact the same as the number of pattern line space in one row
-            elif number_of_tiles == put_pattern_num: 
-                return True
-            
-            # if not the 1st person pick up from center 
-            elif not state.first_agent_taken:
-                return True
-            
-            # if the new picked up tiles can exact full fill the left over spaces in any pattern line
-            elif put_foor_num == 0  and number_of_tiles != put_pattern_num:
-                for i in range(1,6):
-                    if self.agent_state.lines_tile[i] == color_of_tiles:
-                        currentFilled = self.agent_state.lines_number[i]
-                        leftOver = patternLine_index - currentFilled
-                        if leftOver   == number_of_tiles:
-                            return True
+            if any(tile == 1 for tile in wall_state):
+                goal_reached = number_of_tiles == pattern_line + 1 
             else:
-                return False
-        
-        else:
-            if newScore > score: # the score at each round is bigger than previous one
-                return True
-            else:
-                return False
+                goal_reached = number_of_tiles == pattern_line + 1
+            return goal_reached
 
-    
-    def heuristicFunction(self, action):
-        h = 0 
-        return h 
-    
-    # The code below is modified & referenced from the sources below:
-    # Reference 1: Week2 search algorithmns lecture slides, page 41 & 42
-    # Reference 2: aStarSearch() function in assignment 1
-    # (link: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/search.py#L116)
-    # Reference 3: My own work for assignment 1 task 1
-    # (link: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/search.py#L143)
-    # Reference 4: example.bfs 
-    # (link: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L47)
-    # Start-----------------------------------------------------------
+
     def SelectAction(self, actions, rootstate):
-        
         start_time = time.time()
-        pathsList = []
+        queue      = deque([ (deepcopy(rootstate),[]) ]) # Initialise queue. First node = root state and an empty path.
         
-        queue = deque([]) 
-        initial_state = deepcopy(rootstate)
-        initial_Heuristic= self.heuristicFunction(rootstate)
+        # Conduct BFS starting from rootstate.
+        while len(queue) and time.time()-start_time < THINKTIME:
+            state, path = queue.popleft() # Pop the next node (state, path) in the queue.
+            new_actions = self.GetActions(state) # Obtain new actions available to the agent in this state.
+            
+            for a in new_actions: # Then, for each of these actions...
+                next_state = deepcopy(state)              # Copy the state.
+                next_path  = path + [a]                   # Add this action to the path.
+                goal     = self.DoAction(next_state, a) # Carry out this action on the state, and check for goal
+                if goal:
+                    print('path found:', next_path)
+                    return next_path[0] # If the current action reached the goal, return the initial action that led there.
+                else:
+                    queue.append((next_state, next_path)) # Else, simply add this state and its path to the queue.
         
-        for initial_action in actions:
-            initial_Node = (initial_state, initial_action, initial_Heuristic, pathsList)           
-            queue.append(initial_Node)
-
-        closed = []
-
-        while len(queue) != 0 and time.time()-start_time < THINKTIME:
-
-            currentNode = queue.popleft()
-            currentState, currentAction, currentHeuristic, pathsList = currentNode 
-
-            # The code below reference from my work in assignment 1 task 1
-            # [Source code]: https://github.com/COMP90054-2023S1/assignment1-BocongZhao823/blob/2cec9b32e89803b6869496e3268120c3b796dd59/search.py#L200
-            # Begin--------------------------------------------------
-            if not any( target == currentState for target in closed):
-                    closed.append(currentState)
-                    
-                    if currentHeuristic < initial_Heuristic:
-                        initial_state = currentState
-                        break
-            # End------------------------------------------------------
-                    
-                    # The code below reference from example.bfs
-                    # [Source code]: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L54
-                    # Begin------------------------------------
-                    new_actions = self.GetActions(currentState) 
-                    for a in new_actions:
-                        current_state_copy = deepcopy(currentState)  
-                        next_path  = pathsList + [a]                   
-                        goal = self.DoAction(current_state_copy, a) 
-                
-                        if goal == True:
-                            print("path found:",next_path[0])
-                            return next_path[0] 
-                    # End---------------------------------------
-
-                        next_Heuristic = self.heuristicFunction(current_state_copy)
-                        next_node = current_state_copy, a, next_Heuristic, next_path
-                        queue.append(next_node)
-
-        return random.choice(actions) 
-    # End-----------------------------------------------------------------------
+        return random.choice(actions) # If no goal was found in the time limit, return a random action.
         
     
-# END FILE -----------------------------------------------------------------------------------------------------------#
+
+
+# reference : # Author:  Steven Spratley
+# Date:    04/01/2021
+# Purpose: Implements an example breadth-first search agent for the COMP90054 competitive game environment.
