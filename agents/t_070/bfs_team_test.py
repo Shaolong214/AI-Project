@@ -1,42 +1,61 @@
+# INFORMATION ------------------------------------------------------------------------------------------------------- #
+
+
+# Author:  Steven Spratley
+# Date:    04/01/2021
+# Purpose: Implements an example breadth-first search agent for the COMP90054 competitive game environment.
+
+
+# IMPORTS AND CONSTANTS ----------------------------------------------------------------------------------------------#
+
+
 import time, random
 from Azul.azul_model import AzulGameRule as GameRule
 from copy import deepcopy
 from collections import deque
-import Azul.azul_utils as utils
 
+import Azul.azul_model
+import Azul.azul_utils as utils
+from template import GameState
 
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
+
+
+# FUNCTIONS ----------------------------------------------------------------------------------------------------------#
+
 
 # Defines this agent.
 class myAgent():
     def __init__(self, _id):
         self.id = _id # Agent needs to remember its own id.
-        self.game_rule = GameRule(NUM_PLAYERS)
+        self.game_rule = GameRule(NUM_PLAYERS) # Agent stores an instance of GameRule, from which to obtain functions.
+        # More advanced agents might find it useful to not be bound by the functions in GameRule, instead executing
+        # their own custom functions under GetActions and DoAction.
 
     # Generates actions from this state.
     def GetActions(self, state):
         return self.game_rule.getLegalActions(state, self.id)
-                    
+    
+    # Carry out a given action on this state and return True if goal is reached received.
     def DoAction(self, state, action):
         score = state.agents[self.id].score
         state = self.game_rule.generateSuccessor(state, action, self.id)
 
-        if action[0] in (utils.Action.TAKE_FROM_FACTORY, utils.Action.TAKE_FROM_CENTRE):
+        if action[0] == utils.Action.TAKE_FROM_CENTRE or action[0] == utils.Action.TAKE_FROM_FACTORY:
+            # Extract the tile_grab object from the action,so we can use pattern
             tile_grab = action[2]
             number_of_tiles = tile_grab.number
-            pattern_line = tile_grab.pattern_line_dest
-            # number_to_floor = tile_grab.num_to_floor_line
-            agent_state = state.agents[self.id]
-            wall_state = agent_state.grid_state[pattern_line]
+            goal_reached = number_of_tiles == tile_grab.pattern_line_dest + 1
 
-            if any(tile == 1 for tile in wall_state):
-                goal_reached = number_of_tiles == pattern_line + 1 
-            else:
-                goal_reached = number_of_tiles == pattern_line + 1
             return goal_reached
+        
+        
+                
 
 
+    # Take a list of actions and an initial state, and perform breadth-first search within a time limit.
+    # Return the first action that leads to goal, if any was found.
     def SelectAction(self, actions, rootstate):
         start_time = time.time()
         queue      = deque([ (deepcopy(rootstate),[]) ]) # Initialise queue. First node = root state and an empty path.
@@ -59,9 +78,4 @@ class myAgent():
         return random.choice(actions) # If no goal was found in the time limit, return a random action.
         
     
-
-
-# reference : # Author:  Steven Spratley
-# Date:    04/01/2021
-# Purpose: Implements an example breadth-first search agent for the COMP90054 competitive game environment.
-
+# END FILE -----------------------------------------------------------------------------------------------------------#
