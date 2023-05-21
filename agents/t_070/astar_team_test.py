@@ -1,7 +1,5 @@
 # There is still room for improvement with this Astar agent, as there is no real g value (cost) for Azul, 
 # so I have set two h values to find the best move. But I'm still working on the second h value
-
-
 import heapq
 import time, random
 from Azul.azul_model import AzulGameRule as GameRule
@@ -10,7 +8,7 @@ import Azul.azul_utils as utils
 import math
 
 inf = math.inf
-THINKTIME   = 0.91
+THINKTIME   = 1.65
 NUM_PLAYERS = 2
 
 # To solve the same f value and not supported between instances of 'AzulState' and 'AzulState' problem, make a self compare method
@@ -33,32 +31,76 @@ class myAgent():
     
     def calculate_g(self, action, state):
         
-        # Make the number of tiles taken match the pattern empty space that can be put as closely as possible 
+    # This h-heuristic is whether the selected and placed tiles will receive a higher adjacency score in subsequent walls
         if action[0] == utils.Action.TAKE_FROM_CENTRE or action[0] == utils.Action.TAKE_FROM_FACTORY:
-            # if acton is ENDROUND Then return big value
             tile_grab = action[2]
+            
+            agent_state = state.agents[self.id]
             number_of_tiles = tile_grab.number
             pattern_line_dest = tile_grab.pattern_line_dest
             # Get the number of tiles already in the pattern line
-            agent_state = state.agents[self.id]
             existing_tiles = agent_state.lines_number[pattern_line_dest]
             excess_tiles = number_of_tiles + existing_tiles - (pattern_line_dest + 1)
-            #print(excess_tiles)
-            return abs(excess_tiles)
+            excess_tiles = abs(5*excess_tiles)
+            # Get the current grid state
+            grid_state = agent_state.grid_state
+            # Get the column where the tile will be placed
+            tile_type = tile_grab.tile_type
+            grid_col = int(agent_state.grid_scheme[pattern_line_dest][tile_type])
+            # Calculate adjacency score
+            adjacency_score = 0
+            # Check if there's a adjacent tile on the left
+            if grid_col > 0 and grid_state[pattern_line_dest][grid_col - 1] == 1:
+                adjacency_score += 1
+            # Check if there's a adjacent tile on the right
+            if grid_col < agent_state.GRID_SIZE - 1 and grid_state[pattern_line_dest][grid_col + 1] == 1:
+                adjacency_score += 1
+            # Check if there's a adjacent tile above
+            if pattern_line_dest > 0 and grid_state[pattern_line_dest - 1][grid_col] == 1:
+                adjacency_score += 1
+            # Check if there's a adjacent tile below
+            if pattern_line_dest < agent_state.GRID_SIZE - 1 and grid_state[pattern_line_dest + 1][grid_col] == 1:
+                adjacency_score += 1
+            return 2*(excess_tiles + (4 - adjacency_score))
+
         return inf
 
-    def calculate_h(self, action):
-    
-        # This h value will be optimized later, e.g. The first pattern has a higher priority than the second line and so on
+    def calculate_h(self, action, state):
+            
+        # This h-heuristic is whether the selected and placed tiles will receive a higher adjacency score in subsequent walls
         if action[0] == utils.Action.TAKE_FROM_CENTRE or action[0] == utils.Action.TAKE_FROM_FACTORY:
             tile_grab = action[2]
+            opponent_id = 1 - self.id
+            agent_state = state.agents[opponent_id]
             number_of_tiles = tile_grab.number
             pattern_line_dest = tile_grab.pattern_line_dest
-            #print(action,pattern_line_dest)
-            tiles_required = (pattern_line_dest+1)
-            #print(tiles_required)
-            return abs(tiles_required)
-        return inf 
+            # Get the number of tiles already in the pattern line
+            existing_tiles = agent_state.lines_number[pattern_line_dest]
+            excess_tiles = number_of_tiles + existing_tiles - (pattern_line_dest + 1)
+            excess_tiles = abs(5*excess_tiles)
+            # Get the current grid state
+            grid_state = agent_state.grid_state
+            # Get the column where the tile will be placed
+            tile_type = tile_grab.tile_type
+            grid_col = int(agent_state.grid_scheme[pattern_line_dest][tile_type])
+            # Calculate adjacency score
+            adjacency_score = 0
+            # Check if there's a adjacent tile on the left
+            if grid_col > 0 and grid_state[pattern_line_dest][grid_col - 1] == 1:
+                adjacency_score += 1
+            # Check if there's a adjacent tile on the right
+            if grid_col < agent_state.GRID_SIZE - 1 and grid_state[pattern_line_dest][grid_col + 1] == 1:
+                adjacency_score += 1
+            # Check if there's a adjacent tile above
+            if pattern_line_dest > 0 and grid_state[pattern_line_dest - 1][grid_col] == 1:
+                adjacency_score += 1
+            # Check if there's a adjacent tile below
+            if pattern_line_dest < agent_state.GRID_SIZE - 1 and grid_state[pattern_line_dest + 1][grid_col] == 1:
+                adjacency_score += 1
+            return excess_tiles + (4 - adjacency_score)
+
+        return inf
+    
 
     def SelectAction(self, actions, rootstate):
         start_time = time.time()
@@ -67,8 +109,8 @@ class myAgent():
 
         for action in actions:  
             g = self.calculate_g(action,rootstate)
-            h = self.calculate_h(action)
-            f = g 
+            h = self.calculate_h(action,rootstate)
+            f = g + h 
             next_state = self.game_rule.generateSuccessor(deepcopy(rootstate), action, self.id)
             heapq.heappush(queue, HeapNode(f, next_state, action))
             
@@ -83,6 +125,7 @@ class myAgent():
             if best_f is None or f < best_f:
                 best_f = f
                 best_action = action
+                #print(f)
 
              # return a optimal solution when found       
             if f == 0:
@@ -94,9 +137,9 @@ class myAgent():
                     next_state = deepcopy(state)
                     new_actions = self.GetActions(next_state)
                     for new_action in new_actions:
-                        g = self.calculate_g(new_action,next_state)
-                        h = self.calculate_h(new_action)
-                        f = g 
+                        g = self.calculate_g(action,rootstate)
+                        h = self.calculate_h(action,rootstate)
+                        f = g + h 
                         next_state = self.game_rule.generateSuccessor(deepcopy(state), new_action, self.id)
                         heapq.heappush(queue, HeapNode(f, next_state, new_action))
             
