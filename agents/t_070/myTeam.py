@@ -4,7 +4,6 @@ from copy import deepcopy
 from collections import deque
 import Azul.azul_utils as utils
 
-
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
 
@@ -64,4 +63,3 @@ class myAgent():
 # reference : # Author:  Steven Spratley
 # Date:    04/01/2021
 # Purpose: Implements an example breadth-first search agent for the COMP90054 competitive game environment.
-
