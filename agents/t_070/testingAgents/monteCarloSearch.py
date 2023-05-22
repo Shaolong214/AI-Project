@@ -20,7 +20,8 @@ NUM_PLAYERS = 2
 # FUNCTIONS ----------------------------------------------------------------------------------------------------------#
 
 # Code below refering to:
-# 1) Week 9 Monte-Carlo Tree Search Notebook (https://gibberblot.github.io/rl-notes/single-agent/mcts.html)
+# Week 9 Monte-Carlo Tree Search Notebook (
+# [source code]: https://gibberblot.github.io/rl-notes/single-agent/mcts.html)
 
 # Logic
 # 1) Selection

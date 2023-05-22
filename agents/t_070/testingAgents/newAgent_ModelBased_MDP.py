@@ -17,7 +17,8 @@ NUM_PLAYERS = 2
 # FUNCTIONS ----------------------------------------------------------------------------------------------------------#
 
 # Reference: 
-# Week 7 lecture notebook (https://gibberblot.github.io/rl-notes/single-agent/MDPs.html)
+# Week 7 lecture notebook 
+# [source code]: https://gibberblot.github.io/rl-notes/single-agent/MDPs.html)
 class MDPAgent():
 
     def __init__(self, _id):
@@ -27,7 +28,6 @@ class MDPAgent():
 
     def get_states(self, state, action):
         state = self.game_rule.generateSuccessor(state, action, self.id)
-        #plr_state = state.agents[self.id]
         return state
 
     def get_actions(self,state):
@@ -35,8 +35,6 @@ class MDPAgent():
         return action
     
     # I feel the transitions is mainly about 2 actions (pick from factory or center)
-    # get_transitions[0] -- num_states
-    # get_transitions[1] -- num_actions
     def get_transitions(self, state, action):
         transitions = []
 
@@ -87,11 +85,6 @@ class MDPAgent():
                     transitionEle = i, s_new, s_old, action, color_of_tiles, prob  
                     transitions.append(transitionEle)
             
-            
-                                                                                                                                                      
-
-
-
             # after take action: pick tiles from factory
             # it need to get all x number of y colored tile from factory z & put on ith line or floor or bag
             # E.g., "Agent 1 takes 1 yellow(Y) tiles from factory1 1Y placed in pattern line 1"
@@ -173,7 +166,8 @@ class MDPAgent():
 
 
 # Reference: 
-# Week 7 lecture notebook (https://gibberblot.github.io/rl-notes/single-agent/value-iteration.html)
+# Week 7 lecture notebook 
+# [Source Code]: https://gibberblot.github.io/rl-notes/single-agent/value-iteration.html)
 class valueIter():
 
     def __init__(self, _id):
@@ -188,7 +182,5 @@ class valueIter():
         self.policy = None
 
     pass
-                         
-
 
 # END FILE -----------------------------------------------------------------------------------------------------------#
