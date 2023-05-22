@@ -59,7 +59,7 @@ class myAgent():
             # Check if there's a adjacent tile below
             if pattern_line_dest < agent_state.GRID_SIZE - 1 and grid_state[pattern_line_dest + 1][grid_col] == 1:
                 adjacency_score += 1
-            return 2*(excess_tiles + (4 - adjacency_score))
+            return 5*(excess_tiles + (4 - adjacency_score))
 
         return inf
 
