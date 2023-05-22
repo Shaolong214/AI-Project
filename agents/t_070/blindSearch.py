@@ -4,14 +4,11 @@ from copy import deepcopy
 from collections import deque
 import Azul.azul_utils as utils
 from Azul.azul_model import AzulState
-
 import math
 
 inf = math.inf
-
 THINKTIME   = 0.9
 NUM_PLAYERS = 2
-
 
 # FUNCTIONS ----------------------------------------------------------------------------------------------------------#
 # Reference 1: class myStack() class refers from Stack() class in COMP90054 assignment 1
@@ -93,7 +90,7 @@ class myAgent():
     # Reference List: 
     # Reference 1: Week2 search algorithmns lecture slides
     # Reference 2: example.bfs 
-    # (link: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L47)
+    # [Source Code]: link: https://github.com/COMP90054-2023S1/A3_public_template/blob/3c89286e748ea39991a9cb27a64a1938cfe20eca/agents/t_XXX/example_bfs.py#L47
     # Start-----------------------------------------------------------
     
     def SelectAction(self, actions, rootstate):
