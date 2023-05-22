@@ -1,5 +1,4 @@
-# There is still room for improvement with this Astar agent, as there is no real g value (cost) for Azul, 
-# so I have set two h values to find the best move. But I'm still working on the second h value
+# Set h to consider the behaviour of the opponent
 import heapq
 import time, random
 from Azul.azul_model import AzulGameRule as GameRule
