@@ -102,17 +102,6 @@ class MDPAgent():
             transitions.append()
 
         return transitions
-    
-    # So far prob for each state = 1
-    #def valid_add(self, state):
-        #newAction = self.get_actions(state)
-        #newState = self.get_states(state, newAction)
-        #tile_grab = newAction[2]
-        #number_of_tiles = tile_grab.number
-        #color_of_tiles = tile_grab.tile_type
-        #if action in self.get_actions(state):
-        #    pass
-        #return state
 
     # I feel the reward should consider all the situations
     # 1) complete a row/column/set 2) get closed tiles 3) deletion mark etc
@@ -198,23 +187,7 @@ class valueIter():
         self.values = np.zeros(self.num_states)
         self.policy = None
 
-    #def bellmanEqu(self, state, action, new_state):
-    #    prob = 1.0
-    #    new_value = prob * (self.rewards[state] + self.discount * self.values.get_value(new_state)) 
-    #    return new_value
-    
-
-
-    #def value_iteration(self, max_iterations = 100, theta = 0.001):
-    #    for i in range(max_iterations):
-    #        delta = 0.0
-    #        new_values = 0
-    #        for state in self.mdp.get_states():
-    #            qtable = None
-    #            for action in self.mdp.get_actions():
-    #                new_value = 0.0
-    #                for new_state in self.mdp.get_transitions(state, action):
-    #                    new_value += self.bellmanEqu(self, state, action, new_state)
+    pass
                          
 
 
